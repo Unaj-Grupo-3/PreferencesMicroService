@@ -1,6 +1,4 @@
-﻿
-
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
@@ -12,6 +10,5 @@ namespace Domain.Entities
         public int SinceAge { get; set; }
         public int UntilAge { get; set; }
         public int Distance { get; set; }
-
     }
 }

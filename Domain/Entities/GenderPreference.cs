@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
@@ -9,6 +8,5 @@ namespace Domain.Entities
         public int GenderPreferenceId { get; set; }
         public int UserId { get; set; } //FK
         public int GenderId { get; set; } //FK
-
     }
 }
