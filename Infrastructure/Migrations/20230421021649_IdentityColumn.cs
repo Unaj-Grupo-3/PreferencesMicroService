@@ -5,7 +5,7 @@
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class IdentityColumn : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,17 +25,16 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Interest",
+                name: "InterestCategory",
                 columns: table => new
                 {
-                    InterestId = table.Column<int>(type: "int", nullable: false)
+                    InterestCategoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    InterestCategoryId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Interest", x => x.InterestId);
+                    table.PrimaryKey("PK_InterestCategory", x => x.InterestCategoryId);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,20 +54,22 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "InterestCategory",
+                name: "Interest",
                 columns: table => new
                 {
+                    InterestId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     InterestCategoryId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InterestCategory", x => x.InterestCategoryId);
+                    table.PrimaryKey("PK_Interest", x => x.InterestId);
                     table.ForeignKey(
-                        name: "FK_InterestCategory_Interest_InterestCategoryId",
+                        name: "FK_Interest_InterestCategory_InterestCategoryId",
                         column: x => x.InterestCategoryId,
-                        principalTable: "Interest",
-                        principalColumn: "InterestId",
+                        principalTable: "InterestCategory",
+                        principalColumn: "InterestCategoryId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -95,6 +96,11 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Interest_InterestCategoryId",
+                table: "Interest",
+                column: "InterestCategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Preference_InterestId",
                 table: "Preference",
                 column: "InterestId");
@@ -107,9 +113,6 @@ namespace Infrastructure.Migrations
                 name: "GenderPreference");
 
             migrationBuilder.DropTable(
-                name: "InterestCategory");
-
-            migrationBuilder.DropTable(
                 name: "OverallPreference");
 
             migrationBuilder.DropTable(
@@ -117,6 +120,9 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Interest");
+
+            migrationBuilder.DropTable(
+                name: "InterestCategory");
         }
     }
 }

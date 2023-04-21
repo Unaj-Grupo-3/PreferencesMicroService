@@ -4,7 +4,6 @@ namespace Domain.Entities
 {
     public class OverallPreference
     {
-        [Key]
         public int OverallPreferenceId { get; set; }
         public int UserId { get; set; } //FK
         public int SinceAge { get; set; }

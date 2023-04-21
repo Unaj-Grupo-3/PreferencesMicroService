@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230420001146_init")]
-    partial class init
+    [Migration("20230421021649_IdentityColumn")]
+    partial class IdentityColumn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,11 +55,12 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("InterestCategoryId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("InterestCategoryId")
+                        .HasColumnType("int");
 
                     b.HasKey("InterestId");
+
+                    b.HasIndex("InterestCategoryId");
 
                     b.ToTable("Interest", (string)null);
                 });
@@ -69,6 +70,8 @@ namespace Infrastructure.Migrations
                     b.Property<int>("InterestCategoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InterestCategoryId"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -131,15 +134,15 @@ namespace Infrastructure.Migrations
                     b.ToTable("Preference", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.InterestCategory", b =>
+            modelBuilder.Entity("Domain.Entities.Interest", b =>
                 {
-                    b.HasOne("Domain.Entities.Interest", "Interest")
-                        .WithMany("InterestCategories")
+                    b.HasOne("Domain.Entities.InterestCategory", "InterestCategory")
+                        .WithMany("Interests")
                         .HasForeignKey("InterestCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Interest");
+                    b.Navigation("InterestCategory");
                 });
 
             modelBuilder.Entity("Domain.Entities.Preference", b =>
@@ -155,9 +158,12 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Interest", b =>
                 {
-                    b.Navigation("InterestCategories");
-
                     b.Navigation("Preferences");
+                });
+
+            modelBuilder.Entity("Domain.Entities.InterestCategory", b =>
+                {
+                    b.Navigation("Interests");
                 });
 #pragma warning restore 612, 618
         }

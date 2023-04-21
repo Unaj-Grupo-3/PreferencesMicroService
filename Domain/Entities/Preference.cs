@@ -4,7 +4,6 @@ namespace Domain.Entities
 {
     public class Preference
     {
-        [Key]
         public int PreferenceId { get; set; }
         public int UserId { get; set; } //FK
         public int InterestId { get; set; } //FK
@@ -12,6 +11,6 @@ namespace Domain.Entities
         public bool Like { get; set; }
         
         //RELACION
-        public Interest Interest { get; set; }
+        public virtual Interest Interest { get; set; }
     }
 }

@@ -37,9 +37,9 @@ namespace Infrastructure.Persistence
 
                 //RELACION
                 entity
-                    .HasMany<InterestCategory>(interest => interest.InterestCategories)
-                    .WithOne(interestCategory => interestCategory.Interest)
-                    .HasForeignKey(interest => interest.InterestCategoryId);
+                    .HasOne<InterestCategory>(interest => interest.InterestCategory)
+                    .WithMany(interest => interest.Interests)
+                    .HasForeignKey(s => s.InterestCategoryId);
             });
 
             //PREFERENCIA

@@ -1,4 +1,8 @@
+using Application.Interfaces;
+using Application.UseCases;
+using Infrastructure.Commands;
 using Infrastructure.Persistence;
+using Infrastructure.Queries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -20,6 +24,27 @@ builder.Services.AddSwaggerGen(c =>
 //CONECTION STRING
 var connectionString = builder.Configuration["ConnectionString"];
 builder.Services.AddDbContext<AppDbContext>(op => op.UseSqlServer(connectionString));
+
+//TRANSIENTS
+builder.Services.AddTransient<IGenderPreferenceCommand, GenderPreferenceCommand>();
+builder.Services.AddTransient<IGenderPreferenceQuery, GenderPreferenceQuery>();
+builder.Services.AddTransient<IGenderPreferenceService, GenderPreferenceService>();
+
+builder.Services.AddTransient<IInterestCategoryCommand, InterestCategoryCommand>();
+builder.Services.AddTransient<IInterestCategoryQuery, InterestCategoryQuery>();
+builder.Services.AddTransient<IInterestCategoryService, InterestCategoryService>();
+
+builder.Services.AddTransient<IInterestCommand, InterestCommand>();
+builder.Services.AddTransient<IInterestQuery, InterestQuery>();
+builder.Services.AddTransient<IInterestService, InterestService>();
+
+builder.Services.AddTransient<IOverallPreferenceCommand, OverallPreferenceCommand>();
+builder.Services.AddTransient<IOverallPreferenceQuery, OverallPreferenceQuery>();
+builder.Services.AddTransient<IOverallPreferenceService, OverallPreferenceService>();
+
+builder.Services.AddTransient<IPreferenceCommand, PreferenceCommand>();
+builder.Services.AddTransient<IPreferenceQuery, PreferenceQuery>();
+builder.Services.AddTransient<IPreferenceService, PreferenceService>();
 
 var app = builder.Build();
 
