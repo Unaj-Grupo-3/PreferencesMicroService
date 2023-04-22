@@ -53,5 +53,25 @@ namespace Application.UseCases
 
             return response;
         }
+
+        public async Task<InterestResponse> GetById(int userId)
+        {
+            Interest interest = await _query.GetById(userId);
+
+            if (interest != null)
+            {
+                InterestResponse response = new InterestResponse
+                {
+                    Id = interest.InterestId,
+                    Description = interest.Description,
+                    InterestCategory = new InterestCategoryResponse { Id = interest.InterestCategoryId, Description = "" }
+                };
+
+                return response;
+            }
+
+            return null;
+
+        }
     }
 }

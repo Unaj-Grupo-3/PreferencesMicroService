@@ -12,6 +12,7 @@ namespace Infrastructure.Commands
         {
             _context = context;
         }
+
         public async Task Insert(Interest request)
         {
             try

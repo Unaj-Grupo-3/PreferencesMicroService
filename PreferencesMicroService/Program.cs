@@ -46,6 +46,8 @@ builder.Services.AddTransient<IPreferenceCommand, PreferenceCommand>();
 builder.Services.AddTransient<IPreferenceQuery, PreferenceQuery>();
 builder.Services.AddTransient<IPreferenceService, PreferenceService>();
 
+builder.Services.AddTransient<IUserApiService, UserApiService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
