@@ -18,16 +18,40 @@ namespace PreferencesMicroService.Controllers
             _service = service;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetAll(int id)
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            bool userValid = await _userService.ValidateUser(id);
-            if (!userValid)
+            try
             {
-                return new JsonResult(new { Message = _userService.GetMessage(), Response = _userService.GetResponse() }) { StatusCode = _userService.GetStatusCode() };
+                var response = await _service.GetAll();
+                return Ok(response);
             }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
+            }
+        }
 
-            return new JsonResult(new { Message = "Se ha validado el usuario exitosamente.", Response = _userService.GetResponse() }) { StatusCode = 201 };
+        [HttpGet("{UserId}")]
+        public async Task<IActionResult> GetAllByUserId(int UserId)
+        {
+            try
+            {
+                bool userValid = await _userService.ValidateUser(UserId);
+                var message = _userService.GetMessage();
+                var statusCode = _userService.GetStatusCode();
+
+                if (userValid)
+                {
+                    var response = await _service.GetAllByUserId(UserId);
+                    return Ok(response);
+                }
+                return new JsonResult(new { Message = message }) { StatusCode = statusCode };
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
+            }    
         }
 
         [HttpPost]
@@ -44,7 +68,7 @@ namespace PreferencesMicroService.Controllers
                     {
                         return new JsonResult(new { Message = "Se produjo un error al insertar la preferencia. El interés seleccionado no existe", Response = response }) { StatusCode = 400 };
                     }
-                    return new JsonResult(new { Message = "Se ha creado la preferencia exitosamente.", Response = response }) { StatusCode = 201 };
+                    return new JsonResult(new { Message = "Se ha actualizado la preferencia exitosamente.", Response = response }) { StatusCode = 201 };
                 }
                 else
                 {
@@ -53,7 +77,7 @@ namespace PreferencesMicroService.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(new { Message = "Se ha producido un error interno en el servidor." }) { StatusCode = 500 };
+                return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
             }
         }
     }

@@ -15,15 +15,22 @@ namespace Infrastructure.Commands
         }
 
         public async Task Insert(Preference request)
+        {          
+            _context.Add(request);
+            await _context.SaveChangesAsync();         
+        }
+
+        public async Task Update(Preference request)
         {
             try
             {
-                _context.Add(request);
+                _context.PreferenceDb.Update(request);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                var message = ex.Message;
+
+                throw;
             }
         }
     }

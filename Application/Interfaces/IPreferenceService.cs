@@ -6,5 +6,7 @@ namespace Application.Interfaces
     {
         Task<PreferenceResponse> Insert(PreferenceReq request);
         Task<IEnumerable<PreferenceResponse>> GetAll();
+        Task<IEnumerable<PreferenceResponse>> GetAllByUserId(int UserId);
+        Task<PreferenceResponse> GetByid(int UserId, int InterestId);
     }
 }
