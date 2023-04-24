@@ -48,7 +48,7 @@ namespace Application.UseCases
             {
                 Id = interest.InterestId,
                 Description = interest.Description,
-                InterestCategory = new InterestCategoryResponse { Id = interest.InterestCategoryId, Description = "" }
+                InterestCategory = new InterestCategoryResponse { Id = interest.InterestCategoryId, Description = interest.Description }
             };
 
             return response;
@@ -64,7 +64,7 @@ namespace Application.UseCases
                 {
                     Id = interest.InterestId,
                     Description = interest.Description,
-                    InterestCategory = new InterestCategoryResponse { Id = interest.InterestCategoryId, Description = "" }
+                    InterestCategory = new InterestCategoryResponse { Id = interest.InterestCategoryId, Description = interest.Description }
                 };
 
                 return response;

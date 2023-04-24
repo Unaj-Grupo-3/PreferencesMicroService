@@ -29,7 +29,13 @@ namespace Application.UseCases
                     PreferenceResponse response = new PreferenceResponse
                     {
                         UserId = item.UserId,
-                        Interest = new InterestResponse { Id = item.Interest.InterestId, Description = item.Interest.Description },
+                        Interest = new InterestResponse { Id = item.Interest.InterestId, Description = item.Interest.Description,
+                            InterestCategory = new InterestCategoryResponse
+                            {
+                                Id = item.Interest.InterestCategory.InterestCategoryId,
+                                Description = item.Interest.InterestCategory.Description
+                            }
+                        },
                         OwnInterest = item.OwnInterest,
                         Like = item.Like
                     };
@@ -52,7 +58,13 @@ namespace Application.UseCases
                     PreferenceResponse response = new PreferenceResponse
                     {
                         UserId = item.UserId,
-                        Interest = new InterestResponse { Id = item.Interest.InterestId, Description = item.Interest.Description },
+                        Interest = new InterestResponse { Id = item.Interest.InterestId, Description = item.Interest.Description,
+                            InterestCategory = new InterestCategoryResponse
+                            {
+                                Id = item.Interest.InterestCategory.InterestCategoryId,
+                                Description = item.Interest.InterestCategory.Description
+                            }
+                        },
                         OwnInterest = item.OwnInterest,
                         Like = item.Like
                     };
@@ -66,12 +78,17 @@ namespace Application.UseCases
         public async Task<PreferenceResponse> GetByid(int UserId, int InterestId)
         {
             var responsePreference = await _query.GetById(UserId, InterestId);
-            var interest = await _interestService.GetById(InterestId);
 
             PreferenceResponse response = new PreferenceResponse
             {
                 UserId = responsePreference.UserId,
-                Interest = new InterestResponse { Id = interest.Id, Description = interest.Description },
+                Interest = new InterestResponse { Id = responsePreference.Interest.InterestId, Description = responsePreference.Interest.Description,
+                    InterestCategory = new InterestCategoryResponse
+                    {
+                        Id = responsePreference.Interest.InterestCategory.InterestCategoryId,
+                        Description = responsePreference.Interest.InterestCategory.Description
+                    }
+                },
                 OwnInterest = responsePreference.OwnInterest,
                 Like = responsePreference.Like
             };
@@ -113,7 +130,13 @@ namespace Application.UseCases
                 PreferenceResponse response = new PreferenceResponse
                 {
                     UserId = preference.UserId,
-                    Interest = new InterestResponse { Id = interest.Id, Description = interest.Description },
+                    Interest = new InterestResponse { Id = interest.Id, Description = interest.Description,
+                        InterestCategory = new InterestCategoryResponse
+                        {
+                            Id = interest.InterestCategory.Id,
+                            Description = interest.InterestCategory.Description
+                        }
+                    },
                     OwnInterest = preference.OwnInterest,
                     Like = preference.Like
                 };

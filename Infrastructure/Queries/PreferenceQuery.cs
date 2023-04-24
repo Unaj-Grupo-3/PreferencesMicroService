@@ -17,19 +17,19 @@ namespace Infrastructure.Queries
 
         public async Task<IEnumerable<Preference>> GetAll()
         {
-            var lista = await _context.PreferenceDb.Include(i => i.Interest).ToListAsync();
+            var lista = await _context.PreferenceDb.Include(i => i.Interest).ThenInclude(i => i.InterestCategory).ToListAsync();
             return lista;
         }
 
         public async Task<IEnumerable<Preference>> GetAllByUserId(int UserId)
         {
-            var lista = await _context.PreferenceDb.Include(i => i.Interest).Where(i => i.UserId == UserId).ToListAsync();
+            var lista = await _context.PreferenceDb.Include(i => i.Interest).ThenInclude(i => i.InterestCategory).Where(i => i.UserId == UserId).ToListAsync();
             return lista;
         }
 
         public async Task<Preference> GetById(int UserId, int InterestId)
         {
-            var preference = await _context.PreferenceDb.Include(i => i.Interest).Where(i => i.InterestId == InterestId && i.UserId == UserId).FirstOrDefaultAsync();
+            var preference = await _context.PreferenceDb.Include(i => i.Interest).ThenInclude(i => i.InterestCategory).Where(i => i.InterestId == InterestId && i.UserId == UserId).FirstOrDefaultAsync();
             return preference;
         }
     }
