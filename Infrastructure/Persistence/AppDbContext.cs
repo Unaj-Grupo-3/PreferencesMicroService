@@ -72,8 +72,7 @@ namespace Infrastructure.Persistence
             modelBuilder.Entity<GenderPreference>(entity =>
             {
                 entity.ToTable("GenderPreference");
-                entity.HasKey(gp => gp.GenderPreferenceId);
-                entity.Property(gp => gp.GenderPreferenceId).ValueGeneratedOnAdd();
+                entity.HasKey(p => new { p.UserId, p.GenderId });
 
                 //FK p.UserId y p.GenderId
             });

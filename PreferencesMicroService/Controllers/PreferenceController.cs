@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Models;
+using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +24,7 @@ namespace PreferencesMicroService.Controllers
         {
             try
             {
+                await _userService.GetAllGenders();
                 var response = await _service.GetAll();
                 return Ok(response);
             }

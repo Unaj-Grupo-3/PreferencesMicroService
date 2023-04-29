@@ -4,5 +4,6 @@ namespace Application.Models
     {
         public int UserId { get; set; }
         public int GenderId { get; set; }
+        public string GenderName { get; set;}
     }
 }
