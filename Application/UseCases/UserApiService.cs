@@ -1,6 +1,8 @@
 using Application.Interfaces;
 using Application.Models;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -29,7 +31,9 @@ namespace Application.UseCases
             try
             {
                 var content = JsonContent.Create(userId);
-                var responseApi = await _httpClient.GetAsync(_urlUser + "/" + userId);
+                //_httpClient.DefaultRequestHeaders.Authorization
+                //         = new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiIxIiwiQXV0aElkIjoiMjk0MGI2MDgtYzVlYS00ODE3LTFmMTctMDhkYjQ5ZDhlMzgxIiwiZXhwIjoxNjgyOTA1NDg0fQ.31tXsuFtAoMCSl0NmZxS2DJJv04I0U0U-ZCMY8Xh6dSt6D923fDRJ7003w-7rbdqkxflFG1LGAE8qMmemIgXRg");
+                var responseApi = await _httpClient.GetAsync(_urlUser);
                 var responseStatusCode = responseApi.IsSuccessStatusCode;
 
                 if (responseApi.IsSuccessStatusCode)
@@ -46,7 +50,7 @@ namespace Application.UseCases
                     _statusCode = (int)responseApi.StatusCode;
                 }
 
-                return responseApi.IsSuccessStatusCode;
+                return true;
             }
             catch (System.Net.Http.HttpRequestException ex)
             {
@@ -54,6 +58,41 @@ namespace Application.UseCases
                 _statusCode = 500;
                 return false;
             }            
+        }
+
+        public async Task<int> ValidateUserToken(string token)
+        {
+            int userId = 0;
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var responseApi = await _httpClient.GetAsync(_urlUser);
+                var responseStatusCode = responseApi.IsSuccessStatusCode;
+
+                if (responseApi.IsSuccessStatusCode)
+                {
+                    var responseContent = await responseApi.Content.ReadAsStringAsync();
+                    var responseObject = JsonDocument.Parse(responseContent).RootElement;
+                    var responseJson = JsonConvert.DeserializeObject<UserResponse>(responseContent);
+                    userId = responseJson.UserId;
+                    _message = "Se validó el usuario correctamente";
+                    _response = responseObject.ToString();
+                    _statusCode = 200;
+                }
+                else
+                {
+                    _message = "El usuario no existe";
+                    _statusCode = (int)responseApi.StatusCode;
+                }
+
+                return userId;
+            }
+            catch (System.Net.Http.HttpRequestException ex)
+            {
+                _message = "Error en el microservicio de usuarios";
+                _statusCode = 500;
+                return userId;
+            }
         }
 
         public async Task<IEnumerable<GenderResponse>> GetAllGenders()
@@ -119,6 +158,36 @@ namespace Application.UseCases
                 _message = "Error en el microservicio de usuarios";
                 _statusCode = 500;
                 return false;
+            }
+        }
+
+        public async Task<GenderResponse> GetGenderById(int genderId)
+        {
+            try
+            {
+                var content = JsonContent.Create(genderId);
+                var responseApi = await _httpClient.GetAsync(_urlGender + "/" + genderId);
+                var responseStatusCode = responseApi.IsSuccessStatusCode;
+
+                if (responseApi.IsSuccessStatusCode)
+                {
+                    var responseContent = await responseApi.Content.ReadAsStringAsync();
+                    var responseObject = JsonDocument.Parse(responseContent).RootElement;
+                    var responseJson = JsonConvert.DeserializeObject<GenderResponse>(responseContent);
+                    _message = "Se obtuvo el género correctamente";
+                    _response = responseObject.ToString();
+                    _statusCode = 200;
+
+                    return responseJson;
+                }
+
+                return null;
+            }
+            catch (System.Net.Http.HttpRequestException ex)
+            {
+                _message = "Error en el microservicio de usuarios";
+                _statusCode = 500;
+                return null;
             }
         }
 

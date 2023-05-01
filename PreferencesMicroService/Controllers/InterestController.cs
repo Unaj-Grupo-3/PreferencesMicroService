@@ -24,7 +24,14 @@ namespace PreferencesMicroService.Controllers
                 if (request.Description != "")
                 {
                     var response = await _service.Insert(request);
-                    return new JsonResult(new { Message = "Se ha creado el interés exitosamente.", Response = response }) { StatusCode = 201 };
+                    if (response != null)
+                    {
+                        return new JsonResult(new { Message = "Se ha creado el interés exitosamente.", Response = response }) { StatusCode = 201 };
+                    }
+                    else
+                    {
+                        return new JsonResult(new { Message = "La categoría ingresada no existe" }) { StatusCode = 400 };
+                    }
                 }
                 else
                 {

@@ -18,5 +18,11 @@ namespace Infrastructure.Queries
             var lista = await _context.InterestCategoryDb.ToListAsync();
             return lista;
         }
+
+        public async Task<InterestCategory> GetById(int categoryId)
+        {
+            var category = await _context.InterestCategoryDb.Where(c => c.InterestCategoryId == categoryId).FirstOrDefaultAsync();
+            return category;
+        }
     }
 }

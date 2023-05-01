@@ -7,12 +7,14 @@ namespace Application.UseCases
     public class InterestService: IInterestService
     {
         private readonly IInterestQuery _query;
+        private readonly IInterestCategoryQuery _categoryQuery;
         private readonly IInterestCommand _command;
 
-        public InterestService(IInterestQuery query, IInterestCommand command)
+        public InterestService(IInterestQuery query, IInterestCommand command, IInterestCategoryQuery categoryQuery)
         {
             _query = query;
             _command = command;
+            _categoryQuery = categoryQuery;
         }
 
         public async Task<IEnumerable<InterestResponse>> GetAll()
@@ -36,22 +38,29 @@ namespace Application.UseCases
 
         public async Task<InterestResponse> Insert(InterestReq request)
         {
-            Interest interest = new Interest
+            var category = await _categoryQuery.GetById(request.InterestCategoryId);
+
+            if (category != null)
             {
-                Description = request.Description,
-                InterestCategoryId = request.InterestCategoryId
-            };
+                Interest interest = new Interest
+                {
+                    Description = request.Description,
+                    InterestCategoryId = request.InterestCategoryId
+                };
 
-            await _command.Insert(interest);
+                await _command.Insert(interest);
 
-            InterestResponse response = new InterestResponse
-            {
-                Id = interest.InterestId,
-                Description = interest.Description,
-                InterestCategory = new InterestCategoryResponse { Id = interest.InterestCategoryId, Description = interest.Description }
-            };
+                InterestResponse response = new InterestResponse
+                {
+                    Id = interest.InterestId,
+                    Description = interest.Description,
+                    InterestCategory = new InterestCategoryResponse { Id = category.InterestCategoryId, Description = category.Description }
+                };
 
-            return response;
+                return response;
+            }
+            
+            return null;           
         }
 
         public async Task<InterestResponse> GetById(int userId)
