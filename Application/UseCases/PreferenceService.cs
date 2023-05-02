@@ -106,6 +106,8 @@ namespace Application.UseCases
             }
             else
             {
+                var responsePreference = await _query.GetById(request.UserId, request.InterestId);
+
                 Preference preference = new Preference
                 {
                     UserId = request.UserId,
@@ -114,18 +116,21 @@ namespace Application.UseCases
                     Like = request.Like
                 };
 
-                var responsePreference = await _query.GetById(request.UserId, request.InterestId);
-
                 if (responsePreference == null)
                 {
+
                     await _command.Insert(preference);
                 }
                 else
                 {
-                    responsePreference.OwnInterest = request.OwnInterest;
-                    responsePreference.Like = request.Like;
-                    await _command.Update(responsePreference);
+                    return null;
                 }
+                //else
+                //{
+                //    responsePreference.OwnInterest = request.OwnInterest;
+                //    responsePreference.Like = request.Like;
+                //    await _command.Update(responsePreference);
+                //}
 
                 PreferenceResponse response = new PreferenceResponse
                 {
@@ -143,6 +148,84 @@ namespace Application.UseCases
 
                 return response;
             }            
+        }
+
+        public async Task<PreferenceResponse> Update(PreferenceReq request)
+        {
+            Preference preference = await _query.GetById(request.UserId, request.InterestId);
+            var interest = await _interestService.GetById(request.InterestId);
+
+            if (preference != null && interest != null)
+            {
+                preference.UserId = request.UserId;
+                preference.InterestId = request.InterestId;
+                preference.OwnInterest = request.OwnInterest;
+                preference.Like = request.Like;
+
+                await _command.Update(preference);
+
+                PreferenceResponse response = new PreferenceResponse
+                {
+                    UserId = request.UserId,
+                    Interest = new InterestResponse
+                    {
+                        Id = interest.Id,
+                        Description = interest.Description,
+                        InterestCategory = new InterestCategoryResponse
+                        {
+                            Id = interest.InterestCategory.Id,
+                            Description = interest.InterestCategory.Description
+                        }
+                    },
+                    OwnInterest = request.OwnInterest,
+                    Like = request.Like
+                };
+
+                return response;
+            }
+
+            return null;
+        }
+
+        public async Task<PreferenceResponse> Delete(PreferenceReqId request)
+        {
+            try
+            {
+                var preferenceResponse = await _query.GetById(request.UserId, request.InterestId);
+
+                if (preferenceResponse != null)
+                {
+                    await _command.Delete(preferenceResponse);
+
+                    var interest = await _interestService.GetById(request.InterestId);
+
+                    PreferenceResponse response = new PreferenceResponse
+                    {
+                        UserId = preferenceResponse.UserId,
+                        Interest = new InterestResponse
+                        {
+                            Id = interest.Id,
+                            Description = interest.Description,
+                            InterestCategory = new InterestCategoryResponse
+                            {
+                                Id = interest.InterestCategory.Id,
+                                Description = interest.InterestCategory.Description
+                            }
+                        },
+                        OwnInterest = preferenceResponse.OwnInterest,
+                        Like = preferenceResponse.Like
+                    };
+
+                    return response;
+                }
+
+                return null;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }

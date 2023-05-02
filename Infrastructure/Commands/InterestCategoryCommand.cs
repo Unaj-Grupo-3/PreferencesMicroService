@@ -24,5 +24,31 @@ namespace Infrastructure.Commands
                 var message = ex.Message;
             }
         }
+
+        public async Task Update(InterestCategory request)
+        {
+            try
+            {
+                _context.InterestCategoryDb.Update(request);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                var message = ex.Message;
+            }
+        }
+
+        public async Task Delete(InterestCategory request)
+        {
+            try
+            {
+                _context.InterestCategoryDb.Remove(request);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                var message = ex.Message;
+            }
+        }
     }
 }

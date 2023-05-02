@@ -6,5 +6,6 @@ namespace Application.Interfaces
     {
         Task Insert(Preference request);
         Task Update(Preference request);
+        Task Delete(Preference request);
     }
 }

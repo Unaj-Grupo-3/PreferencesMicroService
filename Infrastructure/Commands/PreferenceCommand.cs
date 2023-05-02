@@ -29,8 +29,20 @@ namespace Infrastructure.Commands
             }
             catch (Exception ex)
             {
+                var message = ex.Message;
+            }
+        }
 
-                throw;
+        public async Task Delete(Preference request)
+        {
+            try
+            {
+                _context.PreferenceDb.Remove(request);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                var message = ex.Message;
             }
         }
     }

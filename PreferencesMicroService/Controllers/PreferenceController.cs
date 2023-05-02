@@ -24,7 +24,7 @@ namespace PreferencesMicroService.Controllers
         {
             try
             {
-                await _userService.GetAllGenders();
+                //await _userService.GetAllGenders();
                 var response = await _service.GetAll();
                 return Ok(response);
             }
@@ -68,7 +68,7 @@ namespace PreferencesMicroService.Controllers
 
                     if (response == null)
                     {
-                        return new JsonResult(new { Message = "Se produjo un error al insertar la preferencia. El interés seleccionado no existe", Response = response }) { StatusCode = 400 };
+                        return new JsonResult(new { Message = "Se produjo un error. La preferencia ya fue ingresada o el interés seleccionado no existe", Response = response }) { StatusCode = 400 };
                     }
                     return new JsonResult(new { Message = "Se ha actualizado la preferencia exitosamente.", Response = response }) { StatusCode = 201 };
                 }
@@ -80,6 +80,47 @@ namespace PreferencesMicroService.Controllers
             catch (Exception ex)
             {
                 return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update(PreferenceReq request)
+        {
+            try
+            {                
+                var response = await _service.Update(request);
+                if (response != null)
+                {
+                    return new JsonResult(new { Message = "Se ha actualizado el interés exitosamente.", Response = response }) { StatusCode = 201 };
+                }
+                else
+                {
+                    return new JsonResult(new { Message = "La preferencia ingresada no existe" }) { StatusCode = 400 };
+                }                
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { Message = "Se ha producido un error interno en el servidor." }) { StatusCode = 500 };
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(PreferenceReqId request)
+        {
+            try
+            {
+                var response = await _service.Delete(request);
+
+                if (response != null)
+                {
+                    return Ok(new { Message = "Se ha eliminado la preferencia exitosamente.", Response = response });
+                }
+
+                return new JsonResult(new { Message = "No se encuentra la preferencia ingresada" }) { StatusCode = 404 };
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { Message = "Se ha producido un error interno en el servidor." }) { StatusCode = 500 };
             }
         }
     }

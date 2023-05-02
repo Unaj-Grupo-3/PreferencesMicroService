@@ -50,5 +50,56 @@ namespace Application.UseCases
 
             return response;
         }
+
+        public async Task<InterestCategoryResponse> Update(InterestCategoryReq request, int id)
+        {            
+            InterestCategory interestCategory = await _query.GetById(id);
+
+            if (interestCategory != null)
+            {
+                interestCategory.InterestCategoryId = id;
+                interestCategory.Description = request.Description;
+
+                await _command.Update(interestCategory);
+
+                InterestCategoryResponse response = new InterestCategoryResponse
+                {
+                    Id = interestCategory.InterestCategoryId,
+                    Description = interestCategory.Description
+                };
+
+                return response;
+            }
+
+            return null;
+        }
+
+        public async Task<InterestCategoryResponse> Delete(int id)
+        {
+            try
+            {
+                var interestResponse = await _query.GetById(id);
+
+                if (interestResponse != null)
+                {
+                    await _command.Delete(interestResponse);
+
+                    InterestCategoryResponse response = new InterestCategoryResponse
+                    {
+                        Id = interestResponse.InterestCategoryId,
+                        Description = interestResponse.Description
+                    };
+
+                    return response;
+                }
+
+                return null;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }
