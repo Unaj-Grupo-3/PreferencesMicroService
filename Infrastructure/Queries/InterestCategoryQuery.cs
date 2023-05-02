@@ -15,7 +15,7 @@ namespace Infrastructure.Queries
         }
         public async Task<IEnumerable<InterestCategory>> GetAll()
         {
-            var lista = await _context.InterestCategoryDb.ToListAsync();
+            var lista = await _context.InterestCategoryDb.Include(i => i.Interests).ToListAsync();
             return lista;
         }
 

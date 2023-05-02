@@ -61,7 +61,7 @@ namespace PreferencesMicroService.Controllers
                     var response = await _service.Update(request, id);
                     if (response != null)
                     {
-                        return new JsonResult(new { Message = "Se ha actualizado la categoría exitosamente.", Response = response }) { StatusCode = 201 };
+                        return new JsonResult(new { Message = "Se ha actualizado la categoría exitosamente.", Response = response }) { StatusCode = 200 };
                     }
                     else
                     {

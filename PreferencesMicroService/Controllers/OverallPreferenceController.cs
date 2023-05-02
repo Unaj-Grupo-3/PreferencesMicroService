@@ -1,6 +1,5 @@
 ﻿using Application.Interfaces;
 using Application.Models;
-using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,12 +7,12 @@ namespace PreferencesMicroService.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class PreferenceController : ControllerBase
+    public class OverallPreferenceController : ControllerBase
     {
         private readonly IUserApiService _userService;
-        private readonly IPreferenceService _service;
+        private readonly IOverallPreferenceService _service;
 
-        public PreferenceController(IUserApiService userService, IPreferenceService service)
+        public OverallPreferenceController(IUserApiService userService, IOverallPreferenceService service)
         {
             _userService = userService;
             _service = service;
@@ -24,7 +23,6 @@ namespace PreferencesMicroService.Controllers
         {
             try
             {
-                //await _userService.GetAllGenders();
                 var response = await _service.GetAll();
                 return Ok(response);
             }
@@ -35,7 +33,7 @@ namespace PreferencesMicroService.Controllers
         }
 
         [HttpGet("{UserId}")]
-        public async Task<IActionResult> GetAllByUserId(int UserId)
+        public async Task<IActionResult> GetByUserId(int UserId)
         {
             try
             {
@@ -45,7 +43,13 @@ namespace PreferencesMicroService.Controllers
 
                 if (userValid)
                 {
-                    var response = await _service.GetAllByUserId(UserId);
+                    var response = await _service.GetByUserId(UserId);
+
+                    if (response == null)
+                    {
+                        return new JsonResult(new { Message = "La preferencia ingresada no existe", Response = new { } }) { StatusCode = 200 };
+                    }
+
                     return Ok(response);
                 }
                 return new JsonResult(new { Message = message }) { StatusCode = statusCode };
@@ -53,11 +57,11 @@ namespace PreferencesMicroService.Controllers
             catch (Exception ex)
             {
                 return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
-            }    
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Insert(PreferenceReq request)
+        public async Task<IActionResult> Insert(OverallPreferenceReq request)
         {
             try
             {
@@ -68,9 +72,9 @@ namespace PreferencesMicroService.Controllers
 
                     if (response == null)
                     {
-                        return new JsonResult(new { Message = "Se produjo un error. La preferencia ya fue ingresada o el interés seleccionado no existe", Response = response }) { StatusCode = 400 };
+                        return new JsonResult(new { Message = "Se produjo un error. La preferencia ya fue ingresada previamente", Response = response }) { StatusCode = 400 };
                     }
-                    return new JsonResult(new { Message = "Se ha actualizado la preferencia exitosamente.", Response = response }) { StatusCode = 201 };
+                    return new JsonResult(new { Message = "Se ha creado la preferencia exitosamente.", Response = response }) { StatusCode = 201 };
                 }
                 else
                 {
@@ -84,10 +88,10 @@ namespace PreferencesMicroService.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(PreferenceReq request)
+        public async Task<IActionResult> Update(OverallPreferenceReq request)
         {
             try
-            {                
+            {
                 var response = await _service.Update(request);
                 if (response != null)
                 {
@@ -96,7 +100,7 @@ namespace PreferencesMicroService.Controllers
                 else
                 {
                     return new JsonResult(new { Message = "La preferencia ingresada no existe" }) { StatusCode = 400 };
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -105,11 +109,11 @@ namespace PreferencesMicroService.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(PreferenceReqId request)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                var response = await _service.Delete(request);
+                var response = await _service.Delete(id);
 
                 if (response != null)
                 {
