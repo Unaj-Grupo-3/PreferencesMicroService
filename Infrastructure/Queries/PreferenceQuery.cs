@@ -21,13 +21,13 @@ namespace Infrastructure.Queries
             return lista;
         }
 
-        public async Task<IEnumerable<Preference>> GetAllByUserId(int UserId)
+        public async Task<IEnumerable<Preference>> GetAllByUserId(Guid UserId)
         {
             var lista = await _context.PreferenceDb.Include(i => i.Interest).ThenInclude(i => i.InterestCategory).Where(i => i.UserId == UserId).ToListAsync();
             return lista;
         }
 
-        public async Task<Preference> GetById(int UserId, int InterestId)
+        public async Task<Preference> GetById(Guid UserId, int InterestId)
         {
             var preference = await _context.PreferenceDb.Include(i => i.Interest).ThenInclude(i => i.InterestCategory).Where(i => i.InterestId == InterestId && i.UserId == UserId).FirstOrDefaultAsync();
             return preference;

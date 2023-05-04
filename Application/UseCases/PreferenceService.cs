@@ -46,7 +46,7 @@ namespace Application.UseCases
             return listaResponse;
         }
 
-        public async Task<IEnumerable<PreferenceResponse>> GetAllByUserId(int UserId)
+        public async Task<IEnumerable<PreferenceResponse>> GetAllByUserId(Guid UserId)
         {
             List<PreferenceResponse> listaResponse = new List<PreferenceResponse>();
             var lista = await _query.GetAllByUserId(UserId);
@@ -75,7 +75,7 @@ namespace Application.UseCases
             return listaResponse;
         }
 
-        public async Task<PreferenceResponse> GetByid(int UserId, int InterestId)
+        public async Task<PreferenceResponse> GetByid(Guid UserId, int InterestId)
         {
             var responsePreference = await _query.GetById(UserId, InterestId);
 

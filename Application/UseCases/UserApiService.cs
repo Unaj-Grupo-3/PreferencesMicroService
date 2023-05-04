@@ -26,7 +26,7 @@ namespace Application.UseCases
             _httpClient = new HttpClient(handler);
         }
 
-        public async Task<bool> ValidateUser(int userId)
+        public async Task<bool> ValidateUser(Guid userId)
         {
             try
             {
@@ -60,9 +60,9 @@ namespace Application.UseCases
             }            
         }
 
-        public async Task<int> ValidateUserToken(string token)
+        public async Task<Guid> ValidateUserToken(string token)
         {
-            int userId = 0;
+            Guid userId = Guid.Empty;
             try
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -118,7 +118,6 @@ namespace Application.UseCases
                     _statusCode = (int)responseApi.StatusCode;
                     return new List<GenderResponse>();
                 }
-
 
             }
             catch (System.Net.Http.HttpRequestException ex)

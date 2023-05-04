@@ -28,11 +28,11 @@ namespace PreferencesMicroService.Controllers
             try
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
-                int userId = int.Parse(identity.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
+                Guid userId = Guid.Parse(identity.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
                 var message = _userService.GetMessage();
                 var statusCode = _userService.GetStatusCode();
 
-                if (userId > 0)
+                if (userId != Guid.Empty)
                 {
                     var response = await _service.GetAllByUserId(userId);
                     return Ok(response);
@@ -46,7 +46,7 @@ namespace PreferencesMicroService.Controllers
         }
 
         [HttpGet("{UserId}")]
-        public async Task<IActionResult> GetAllByUserId(int UserId)
+        public async Task<IActionResult> GetAllByUserId(Guid UserId)
         {
             try
             {

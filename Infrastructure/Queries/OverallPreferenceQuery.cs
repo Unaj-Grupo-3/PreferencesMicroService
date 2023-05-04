@@ -20,7 +20,7 @@ namespace Infrastructure.Queries
             return lista;
         }
 
-        public async Task<OverallPreference> GetByUserId(int UserId)
+        public async Task<OverallPreference> GetByUserId(Guid UserId)
         {
             var lista = await _context.OverallPreferenceDb.Where(i => i.UserId == UserId).FirstOrDefaultAsync();
             return lista;

@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class IdentityColumn : Migration
+    public partial class userGuid : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,14 +15,12 @@ namespace Infrastructure.Migrations
                 name: "GenderPreference",
                 columns: table => new
                 {
-                    GenderPreferenceId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GenderId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GenderPreference", x => x.GenderPreferenceId);
+                    table.PrimaryKey("PK_GenderPreference", x => new { x.UserId, x.GenderId });
                 });
 
             migrationBuilder.CreateTable(
@@ -43,7 +42,7 @@ namespace Infrastructure.Migrations
                 {
                     OverallPreferenceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SinceAge = table.Column<int>(type: "int", nullable: false),
                     UntilAge = table.Column<int>(type: "int", nullable: false),
                     Distance = table.Column<int>(type: "int", nullable: false)
@@ -77,16 +76,14 @@ namespace Infrastructure.Migrations
                 name: "Preference",
                 columns: table => new
                 {
-                    PreferenceId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     InterestId = table.Column<int>(type: "int", nullable: false),
                     OwnInterest = table.Column<bool>(type: "bit", nullable: false),
                     Like = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Preference", x => x.PreferenceId);
+                    table.PrimaryKey("PK_Preference", x => new { x.UserId, x.InterestId });
                     table.ForeignKey(
                         name: "FK_Preference_Interest_InterestId",
                         column: x => x.InterestId,

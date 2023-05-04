@@ -39,7 +39,7 @@ namespace Application.UseCases
             return listaResponse;
         }
 
-        public async Task<OverallPreferenceResponse> GetByUserId(int UserId)
+        public async Task<OverallPreferenceResponse> GetByUserId(Guid UserId)
         {            
             var overallPreference = await _query.GetByUserId(UserId);
 
@@ -120,7 +120,7 @@ namespace Application.UseCases
 
             return null;
         }
-        public async Task<OverallPreferenceResponse> Delete(int UserId)
+        public async Task<OverallPreferenceResponse> Delete(Guid UserId)
         {
             try
             {

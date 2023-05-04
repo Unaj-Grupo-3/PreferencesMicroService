@@ -35,7 +35,7 @@ namespace PreferencesMicroService.Controllers
         }
 
         [HttpGet("{UserId}")]
-        public async Task<IActionResult> GetAllByUserId(int UserId)
+        public async Task<IActionResult> GetAllByUserId(Guid UserId)
         {
             try
             {

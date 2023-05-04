@@ -17,7 +17,7 @@ namespace Application.UseCases
             _userService = userService;
 
         }
-        public async Task<IEnumerable<GenderPreferenceResponse>> GetAllByUserId(int userId)
+        public async Task<IEnumerable<GenderPreferenceResponse>> GetAllByUserId(Guid userId)
         {
             List<GenderPreferenceResponse> listaResponse = new List<GenderPreferenceResponse>();
             var lista = await _query.GetAllByUserId(userId);

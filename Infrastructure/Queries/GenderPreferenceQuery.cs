@@ -14,13 +14,13 @@ namespace Infrastructure.Queries
             _context = context;
         }
 
-        public async Task<IEnumerable<GenderPreference>> GetAllByUserId(int userId)
+        public async Task<IEnumerable<GenderPreference>> GetAllByUserId(Guid userId)
         {
             var lista = await _context.GenderPreferenceDb.Where(i => i.UserId == userId).ToListAsync();
             return lista;
         }
 
-        public async Task<GenderPreference> GetById(int userId, int genderId)
+        public async Task<GenderPreference> GetById(Guid userId, int genderId)
         {
             var gender = await _context.GenderPreferenceDb.Where(i => i.UserId == userId && i.GenderId == genderId).FirstOrDefaultAsync();
             return gender;

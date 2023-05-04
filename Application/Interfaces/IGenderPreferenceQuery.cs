@@ -4,7 +4,7 @@ namespace Application.Interfaces
 {
     public interface IGenderPreferenceQuery
     {
-        Task<IEnumerable<GenderPreference>> GetAllByUserId(int userId);
-        Task<GenderPreference> GetById(int userId, int genderId);
+        Task<IEnumerable<GenderPreference>> GetAllByUserId(Guid userId);
+        Task<GenderPreference> GetById(Guid userId, int genderId);
     }
 }

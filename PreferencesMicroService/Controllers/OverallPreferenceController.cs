@@ -33,7 +33,7 @@ namespace PreferencesMicroService.Controllers
         }
 
         [HttpGet("{UserId}")]
-        public async Task<IActionResult> GetByUserId(int UserId)
+        public async Task<IActionResult> GetByUserId(Guid UserId)
         {
             try
             {
@@ -109,11 +109,11 @@ namespace PreferencesMicroService.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid UserId)
         {
             try
             {
-                var response = await _service.Delete(id);
+                var response = await _service.Delete(UserId);
 
                 if (response != null)
                 {

@@ -1,10 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Domain.Entities
+﻿namespace Domain.Entities
 {
     public class GenderPreference
     {
-        public int UserId { get; set; } //FK
+        public Guid UserId { get; set; } //FK
         public int GenderId { get; set; } //FK
     }
 }

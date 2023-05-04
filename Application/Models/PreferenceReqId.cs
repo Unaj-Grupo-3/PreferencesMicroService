@@ -4,7 +4,7 @@ namespace Application.Models
 {
     public class PreferenceReqId
     {
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public int InterestId { get; set; }
     }
 }
