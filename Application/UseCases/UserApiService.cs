@@ -73,7 +73,7 @@ namespace Application.UseCases
                 {
                     var responseContent = await responseApi.Content.ReadAsStringAsync();
                     var responseObject = JsonDocument.Parse(responseContent).RootElement;
-                    var responseJson = JsonConvert.DeserializeObject<UserResponse>(responseContent);
+                    var responseJson = JsonConvert.DeserializeObject<UserPreferencesResponse>(responseContent);
                     userId = responseJson.UserId;
                     _message = "Se validó el usuario correctamente";
                     _response = responseObject.ToString();
