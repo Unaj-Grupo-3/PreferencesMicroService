@@ -50,6 +50,7 @@ builder.Services.AddTransient<IPreferenceQuery, PreferenceQuery>();
 builder.Services.AddTransient<IPreferenceService, PreferenceService>();
 
 builder.Services.AddTransient<IUserApiService, UserApiService>();
+builder.Services.AddTransient<IUserPreferencesService, UserPreferencesService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
