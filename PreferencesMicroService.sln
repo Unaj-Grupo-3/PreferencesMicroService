@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreferencesMicroService", "PreferencesMicroService\PreferencesMicroService.csproj", "{BB588FA1-1EA5-4DE3-B130-FC0B72A2D6EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PreferencesMicroService", "PreferencesMicroService\PreferencesMicroService.csproj", "{BB588FA1-1EA5-4DE3-B130-FC0B72A2D6EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{9017BC45-69BE-4025-B4B0-E14BB1A5BCB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{9017BC45-69BE-4025-B4B0-E14BB1A5BCB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{F4870DF0-FD44-46CB-B548-EBEC123BB7F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{F4870DF0-FD44-46CB-B548-EBEC123BB7F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{E0E2DFC9-04F6-44AA-9BE4-35BFDADC4C4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{E0E2DFC9-04F6-44AA-9BE4-35BFDADC4C4A}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{9845017F-DECE-4747-899F-171F5BD8E09E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E0E2DFC9-04F6-44AA-9BE4-35BFDADC4C4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0E2DFC9-04F6-44AA-9BE4-35BFDADC4C4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0E2DFC9-04F6-44AA-9BE4-35BFDADC4C4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9845017F-DECE-4747-899F-171F5BD8E09E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9845017F-DECE-4747-899F-171F5BD8E09E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9845017F-DECE-4747-899F-171F5BD8E09E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9845017F-DECE-4747-899F-171F5BD8E09E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
