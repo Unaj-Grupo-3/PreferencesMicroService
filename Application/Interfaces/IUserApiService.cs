@@ -5,11 +5,11 @@ namespace Application.Interfaces
 {
     public interface IUserApiService
     {
-        Task<bool> ValidateUser(int UserId);
+        Task<bool> ValidateUser(string urluser, int UserId, string token);
         Task<int> ValidateUserToken(string token);
-        Task<IEnumerable<GenderResponse>> GetAllGenders();
-        Task<GenderResponse> GetGenderById(int genderId);
-        Task<bool> ValidateGender(int genderId);
+        Task<IEnumerable<GenderResponse>> GetAllGenders(string urluser);
+        Task<GenderResponse> GetGenderById(string urluser, int genderId);
+        Task<bool> ValidateGender(string urluser, int genderId);
         string GetMessage();
         JsonDocument GetResponse();
         int GetStatusCode();

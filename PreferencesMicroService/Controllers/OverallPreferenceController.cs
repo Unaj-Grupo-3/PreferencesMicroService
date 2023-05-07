@@ -1,7 +1,11 @@
 ﻿using Application.Interfaces;
 using Application.Models;
+using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Net.Http.Headers;
+using System.Security.Claims;
 
 namespace PreferencesMicroService.Controllers
 {
@@ -11,11 +15,13 @@ namespace PreferencesMicroService.Controllers
     {
         private readonly IUserApiService _userService;
         private readonly IOverallPreferenceService _service;
+        private readonly IConfiguration _configuration;
 
-        public OverallPreferenceController(IUserApiService userService, IOverallPreferenceService service)
+        public OverallPreferenceController(IUserApiService userService, IOverallPreferenceService service, IConfiguration configuration)
         {
             _userService = userService;
             _service = service;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -37,7 +43,10 @@ namespace PreferencesMicroService.Controllers
         {
             try
             {
-                bool userValid = await _userService.ValidateUser(UserId);
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+                var urluser = _configuration.GetSection("urluser").Get<string>();
+                bool userValid = await _userService.ValidateUser(urluser, UserId, token);
                 var message = _userService.GetMessage();
                 var statusCode = _userService.GetStatusCode();
 
@@ -65,7 +74,10 @@ namespace PreferencesMicroService.Controllers
         {
             try
             {
-                bool userValid = await _userService.ValidateUser(request.UserId);
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+                var urluser = _configuration.GetSection("urluser").Get<string>();
+                bool userValid = await _userService.ValidateUser(urluser, request.UserId, token);
                 if (userValid)
                 {
                     var response = await _service.Insert(request);
