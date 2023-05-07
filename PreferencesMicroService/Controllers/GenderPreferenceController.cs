@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using System.Security.Claims;
 
 namespace PreferencesMicroService.Controllers
@@ -14,11 +15,13 @@ namespace PreferencesMicroService.Controllers
     {
         private readonly IUserApiService _userService;
         private readonly IGenderPreferenceService _service;
+        private readonly IConfiguration _configuration;
 
-        public GenderPreferenceController(IUserApiService userService, IGenderPreferenceService service)
+        public GenderPreferenceController(IUserApiService userService, IGenderPreferenceService service, IConfiguration configuration)
         {
             _userService = userService;
             _service = service;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -31,10 +34,11 @@ namespace PreferencesMicroService.Controllers
                 int userId = int.Parse(identity.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
                 var message = _userService.GetMessage();
                 var statusCode = _userService.GetStatusCode();
+                var urluser = _configuration.GetSection("urluser").Get<string>();
 
                 if (userId > 0)
                 {
-                    var response = await _service.GetAllByUserId(userId);
+                    var response = await _service.GetAllByUserId(urluser, userId);
                     return Ok(response);
                 }
                 return new JsonResult(new { Message = message }) { StatusCode = statusCode };
@@ -50,13 +54,16 @@ namespace PreferencesMicroService.Controllers
         {
             try
             {
-                bool userValid = await _userService.ValidateUser(UserId);
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+                var urluser = _configuration.GetSection("urluser").Get<string>();
+                bool userValid = await _userService.ValidateUser(urluser, UserId, token);
                 var message = _userService.GetMessage();
                 var statusCode = _userService.GetStatusCode();
 
                 if (userValid)
                 {
-                    var response = await _service.GetAllByUserId(UserId);
+                    var response = await _service.GetAllByUserId(urluser, UserId);
                     return Ok(response);
                 }
                 return new JsonResult(new { Message = message }) { StatusCode = statusCode };
@@ -72,10 +79,13 @@ namespace PreferencesMicroService.Controllers
         {
             try
             {
-                bool userValid = await _userService.ValidateUser(request.UserId);
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+                var urluser = _configuration.GetSection("urluser").Get<string>();                
+                bool userValid = await _userService.ValidateUser(urluser, request.UserId, token);
                 if (userValid)
                 {
-                    var response = await _service.Insert(request);
+                    var response = await _service.Insert(urluser, request);
 
                     if (response == null)
                     {
@@ -99,10 +109,13 @@ namespace PreferencesMicroService.Controllers
         {
             try
             {
-                bool userValid = await _userService.ValidateUser(request.UserId);
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+                var urluser = _configuration.GetSection("urluser").Get<string>();
+                bool userValid = await _userService.ValidateUser(urluser, request.UserId, token);                
                 if (userValid)
                 {
-                    var response = await _service.Delete(request);
+                    var response = await _service.Delete(urluser, request);
 
                     if (response == null)
                     {

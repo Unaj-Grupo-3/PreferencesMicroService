@@ -17,11 +17,11 @@ namespace Application.UseCases
             _userService = userService;
 
         }
-        public async Task<IEnumerable<GenderPreferenceResponse>> GetAllByUserId(int userId)
+        public async Task<IEnumerable<GenderPreferenceResponse>> GetAllByUserId(string userurl, int userId)
         {
             List<GenderPreferenceResponse> listaResponse = new List<GenderPreferenceResponse>();
             var lista = await _query.GetAllByUserId(userId);
-            var listaGenders = await _userService.GetAllGenders();
+            var listaGenders = await _userService.GetAllGenders(userurl);
 
             if (lista.Any() && listaGenders.Any())
             {
@@ -40,9 +40,9 @@ namespace Application.UseCases
             return listaResponse;
         }
 
-        public async Task<GenderPreferenceResponse> Insert(GenderPreferenceReq request)
+        public async Task<GenderPreferenceResponse> Insert(string userurl, GenderPreferenceReq request)
         {
-            var gender = await _userService.GetGenderById(request.GenderId);
+            var gender = await _userService.GetGenderById(userurl, request.GenderId);
 
             if (gender != null)       
             {
@@ -76,9 +76,9 @@ namespace Application.UseCases
             return null;
         }
 
-        public async Task<GenderPreferenceResponse> Delete(GenderPreferenceReq request)
+        public async Task<GenderPreferenceResponse> Delete(string userurl, GenderPreferenceReq request)
         {
-            var gender = await _userService.GetGenderById(request.GenderId);
+            var gender = await _userService.GetGenderById(userurl, request.GenderId);
 
             if (gender != null)
             {

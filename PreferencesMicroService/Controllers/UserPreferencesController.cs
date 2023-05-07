@@ -10,10 +10,12 @@ namespace PreferencesMicroService.Controllers
     public class UserPreferencesController : ControllerBase
     {
         private readonly IUserPreferencesService _userPreferencesService;
+        private readonly IConfiguration _configuration;
 
-        public UserPreferencesController(IUserPreferencesService userPreferencesService)
+        public UserPreferencesController(IUserPreferencesService userPreferencesService, IConfiguration configuration)
         {
             _userPreferencesService = userPreferencesService;
+            _configuration = configuration;
         }
 
         [HttpGet("{UserId}")]
@@ -21,7 +23,9 @@ namespace PreferencesMicroService.Controllers
         {
             try
             {
-                var response = await _userPreferencesService.GetByUserId(UserId);
+
+                var urluser = _configuration.GetSection("urluser").Get<string>();
+                var response = await _userPreferencesService.GetByUserId(urluser, UserId);
                 return Ok(response);
             }
             catch (Exception ex)

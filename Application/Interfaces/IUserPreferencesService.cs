@@ -4,6 +4,6 @@ namespace Application.Interfaces
 {
     public interface IUserPreferencesService
     {
-        Task<UserPreferencesResponse> GetByUserId(int UserId);
+        Task<UserPreferencesResponse> GetByUserId(string urluser, int UserId);
     }
 }

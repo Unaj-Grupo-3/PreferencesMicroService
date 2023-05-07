@@ -19,21 +19,21 @@ namespace Application.UseCases
 
         public UserApiService()
         {
-            _urlUser = "https://localhost:7020/api/v1/User";
-            _urlGender = "https://localhost:7020/api/v1/Gender";
+            _urlUser = "/api/v1/User/";
+            _urlGender = "/api/v1/Gender/";
             var handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
             _httpClient = new HttpClient(handler);
         }
 
-        public async Task<bool> ValidateUser(int userId)
+        public async Task<bool> ValidateUser(string urluser, int userId, string token)
         {
             try
             {
                 var content = JsonContent.Create(userId);
-                //_httpClient.DefaultRequestHeaders.Authorization
-                //         = new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiIxIiwiQXV0aElkIjoiMjk0MGI2MDgtYzVlYS00ODE3LTFmMTctMDhkYjQ5ZDhlMzgxIiwiZXhwIjoxNjgyOTA1NDg0fQ.31tXsuFtAoMCSl0NmZxS2DJJv04I0U0U-ZCMY8Xh6dSt6D923fDRJ7003w-7rbdqkxflFG1LGAE8qMmemIgXRg");
-                var responseApi = await _httpClient.GetAsync(_urlUser);
+                _httpClient.DefaultRequestHeaders.Authorization
+                         = new AuthenticationHeaderValue("Bearer", token);
+                var responseApi = await _httpClient.GetAsync(urluser + _urlUser +  userId);
                 var responseStatusCode = responseApi.IsSuccessStatusCode;
 
                 if (responseApi.IsSuccessStatusCode)
@@ -95,11 +95,11 @@ namespace Application.UseCases
             }
         }
 
-        public async Task<IEnumerable<GenderResponse>> GetAllGenders()
+        public async Task<IEnumerable<GenderResponse>> GetAllGenders(string urluser)
         {
             try
             {
-                var responseApi = await _httpClient.GetAsync(_urlGender);
+                var responseApi = await _httpClient.GetAsync(urluser + _urlGender);
                 var responseStatusCode = responseApi.IsSuccessStatusCode;
 
                 if (responseApi.IsSuccessStatusCode)
@@ -129,12 +129,12 @@ namespace Application.UseCases
             }
         }
 
-        public async Task<bool> ValidateGender(int genderId)
+        public async Task<bool> ValidateGender(string urluser, int genderId)
         {
             try
             {
                 var content = JsonContent.Create(genderId);
-                var responseApi = await _httpClient.GetAsync(_urlGender + "/" + genderId);
+                var responseApi = await _httpClient.GetAsync(urluser + _urlGender + "/" + genderId);
                 var responseStatusCode = responseApi.IsSuccessStatusCode;
 
                 if (responseApi.IsSuccessStatusCode)
@@ -161,12 +161,12 @@ namespace Application.UseCases
             }
         }
 
-        public async Task<GenderResponse> GetGenderById(int genderId)
+        public async Task<GenderResponse> GetGenderById(string urluser, int genderId)
         {
             try
             {
                 var content = JsonContent.Create(genderId);
-                var responseApi = await _httpClient.GetAsync(_urlGender + "/" + genderId);
+                var responseApi = await _httpClient.GetAsync(urluser + _urlGender + genderId);
                 var responseStatusCode = responseApi.IsSuccessStatusCode;
 
                 if (responseApi.IsSuccessStatusCode)

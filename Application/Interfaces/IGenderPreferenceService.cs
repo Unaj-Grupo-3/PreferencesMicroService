@@ -4,8 +4,8 @@ namespace Application.Interfaces
 {
     public interface IGenderPreferenceService
     {
-        Task<GenderPreferenceResponse> Insert(GenderPreferenceReq request);
-        Task<IEnumerable<GenderPreferenceResponse>> GetAllByUserId(int userId);
-        Task<GenderPreferenceResponse> Delete(GenderPreferenceReq request);
+        Task<GenderPreferenceResponse> Insert(string userurl, GenderPreferenceReq request);
+        Task<IEnumerable<GenderPreferenceResponse>> GetAllByUserId(string userurl, int userId);
+        Task<GenderPreferenceResponse> Delete(string userurl, GenderPreferenceReq request);
     }
 }

@@ -16,14 +16,14 @@ namespace Application.UseCases
             _genderPreferenceService = genderPreferenceService;
         }
 
-        public async Task<UserPreferencesResponse> GetByUserId(int UserId)
+        public async Task<UserPreferencesResponse> GetByUserId(string urluser, int UserId)
         {
             List<int> interests = new List<int>();
             List<int> genders = new List<int>();  
 
             var preferenceResponse = await _preferenceService.GetAllByUserId(UserId);
             var overallPreferenceResponse = await _overallPreferenceService.GetByUserId(UserId);
-            var genderPreferenceResponse = await _genderPreferenceService.GetAllByUserId(UserId);
+            var genderPreferenceResponse = await _genderPreferenceService.GetAllByUserId(urluser, UserId);
 
             if (overallPreferenceResponse != null)
             {
