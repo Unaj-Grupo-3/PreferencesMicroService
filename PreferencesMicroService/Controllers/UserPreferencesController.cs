@@ -18,6 +18,21 @@ namespace PreferencesMicroService.Controllers
             _configuration = configuration;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var urluser = _configuration.GetSection("urluser").Get<string>();
+                var response = await _userPreferencesService.GetAll(urluser);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
+            }
+        }
+
         [HttpGet("{UserId}")]
         public async Task<IActionResult> GetByUserId(int UserId)
         {
