@@ -26,14 +26,14 @@ namespace Application.UseCases
             _httpClient = new HttpClient(handler);
         }
 
-        public async Task<bool> ValidateUser(string urluser, int userId, string token)
+        public async Task<bool> ValidateUser(string urluser, string token)
         {
             try
             {
-                var content = JsonContent.Create(userId);
+                //var content = JsonContent.Create(userId);
                 _httpClient.DefaultRequestHeaders.Authorization
                          = new AuthenticationHeaderValue("Bearer", token);
-                var responseApi = await _httpClient.GetAsync(urluser + _urlUser +  userId);
+                var responseApi = await _httpClient.GetAsync(urluser + _urlUser + "me" );
                 var responseStatusCode = responseApi.IsSuccessStatusCode;
 
                 if (responseApi.IsSuccessStatusCode)
@@ -48,6 +48,7 @@ namespace Application.UseCases
                 {
                     _message = "El usuario no existe";
                     _statusCode = (int)responseApi.StatusCode;
+                    return false;
                 }
 
                 return true;

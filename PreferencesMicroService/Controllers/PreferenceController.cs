@@ -1,10 +1,13 @@
 ﻿using Application.Interfaces;
 using Application.Models;
 using Azure.Core;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
 namespace PreferencesMicroService.Controllers
@@ -16,44 +19,35 @@ namespace PreferencesMicroService.Controllers
         private readonly IUserApiService _userService;
         private readonly IPreferenceService _service;
         private readonly IConfiguration _configuration;
+        private readonly ITokenServices _tokenServices;
 
-        public PreferenceController(IUserApiService userService, IPreferenceService service, IConfiguration configuration)
+        public PreferenceController(IUserApiService userService, IPreferenceService service, IConfiguration configuration, ITokenServices tokenServices)
         {
             _userService = userService;
             _service = service;
             _configuration = configuration;
+            _tokenServices = tokenServices;
         }
 
+        
         [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            try
-            {
-                //await _userService.GetAllGenders();
-                var response = await _service.GetAll();
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
-            }
-        }
-
-        [HttpGet("{UserId}")]
-        public async Task<IActionResult> GetAllByUserId(int UserId)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> GetAllByUserId()
         {
             try
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
+                int userId = _tokenServices.GetUserId(identity);
                 var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+
                 var urluser = _configuration.GetSection("urluser").Get<string>();
-                bool userValid = await _userService.ValidateUser(urluser, UserId, token);
+                bool userValid = await _userService.ValidateUser(urluser, token);
                 var message = _userService.GetMessage();
                 var statusCode = _userService.GetStatusCode();
 
                 if (userValid)
                 {
-                    var response = await _service.GetAllByUserId(UserId);
+                    var response = await _service.GetAllByUserId(userId);
                     return Ok(response);
                 }
                 return new JsonResult(new { Message = message }) { StatusCode = statusCode };
@@ -65,17 +59,21 @@ namespace PreferencesMicroService.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Insert(PreferenceReq request)
         {
             try
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
                 var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+                int userId = _tokenServices.GetUserId(identity);
+
                 var urluser = _configuration.GetSection("urluser").Get<string>();
-                bool userValid = await _userService.ValidateUser(urluser, request.UserId, token);
+                bool userValid = await _userService.ValidateUser(urluser, token);
+
                 if (userValid)
                 {
-                    var response = await _service.Insert(request);
+                    var response = await _service.Insert(request, userId);
 
                     if (response == null)
                     {
@@ -95,11 +93,24 @@ namespace PreferencesMicroService.Controllers
         }
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Update(PreferenceReq request)
         {
             try
-            {                
-                var response = await _service.Update(request);
+            {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+                int userId = _tokenServices.GetUserId(identity);
+
+                var urluser = _configuration.GetSection("urluser").Get<string>();
+                bool userValid = await _userService.ValidateUser(urluser, token);
+
+                if (!userValid)
+                {
+                    return new JsonResult(new { Message = _userService.GetMessage() }) { StatusCode = _userService.GetStatusCode() };
+                }
+
+                var response = await _service.Update(request, userId);
                 if (response != null)
                 {
                     return new JsonResult(new { Message = "Se ha actualizado el interés exitosamente.", Response = response }) { StatusCode = 200 };
@@ -116,11 +127,24 @@ namespace PreferencesMicroService.Controllers
         }
 
         [HttpDelete]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete(PreferenceReqId request)
         {
             try
             {
-                var response = await _service.Delete(request);
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+                int userId = _tokenServices.GetUserId(identity);
+
+                var urluser = _configuration.GetSection("urluser").Get<string>();
+                bool userValid = await _userService.ValidateUser(urluser, token);
+
+                if (!userValid)
+                {
+                    return new JsonResult(new { Message = _userService.GetMessage() }) { StatusCode = _userService.GetStatusCode() };
+                }
+
+                var response = await _service.Delete(request, userId);
 
                 if (response != null)
                 {
@@ -134,5 +158,22 @@ namespace PreferencesMicroService.Controllers
                 return new JsonResult(new { Message = "Se ha producido un error interno en el servidor." }) { StatusCode = 500 };
             }
         }
+
+        // Quizas no es necesario
+        //[HttpGet("All")]
+        //public async Task<IActionResult> GetAll()
+        //{
+        //    try
+        //    {
+        //        //await _userService.GetAllGenders();
+        //        var response = await _service.GetAll();
+        //        return Ok(response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
+        //    }
+        //}
+
     }
 }

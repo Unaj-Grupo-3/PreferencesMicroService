@@ -16,12 +16,14 @@ namespace PreferencesMicroService.Controllers
         private readonly IUserApiService _userService;
         private readonly IGenderPreferenceService _service;
         private readonly IConfiguration _configuration;
+        private readonly ITokenServices _tokenServices;
 
-        public GenderPreferenceController(IUserApiService userService, IGenderPreferenceService service, IConfiguration configuration)
+        public GenderPreferenceController(IUserApiService userService, IGenderPreferenceService service, IConfiguration configuration, ITokenServices tokenServices)
         {
             _userService = userService;
             _service = service;
             _configuration = configuration;
+            _tokenServices = tokenServices;
         }
 
         [HttpGet]
@@ -31,7 +33,7 @@ namespace PreferencesMicroService.Controllers
             try
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
-                int userId = int.Parse(identity.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
+                int userId = _tokenServices.GetUserId(identity);
                 var message = _userService.GetMessage();
                 var statusCode = _userService.GetStatusCode();
                 var urluser = _configuration.GetSection("urluser").Get<string>();
@@ -49,43 +51,23 @@ namespace PreferencesMicroService.Controllers
             }
         }
 
-        [HttpGet("{UserId}")]
-        public async Task<IActionResult> GetAllByUserId(int UserId)
-        {
-            try
-            {
-                var identity = HttpContext.User.Identity as ClaimsIdentity;
-                var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
-                var urluser = _configuration.GetSection("urluser").Get<string>();
-                bool userValid = await _userService.ValidateUser(urluser, UserId, token);
-                var message = _userService.GetMessage();
-                var statusCode = _userService.GetStatusCode();
-
-                if (userValid)
-                {
-                    var response = await _service.GetAllByUserId(urluser, UserId);
-                    return Ok(response);
-                }
-                return new JsonResult(new { Message = message }) { StatusCode = statusCode };
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
-            }
-        }
-
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Insert(GenderPreferenceReq request)
         {
             try
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
+                int userId = _tokenServices.GetUserId(identity);
                 var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
-                var urluser = _configuration.GetSection("urluser").Get<string>();                
-                bool userValid = await _userService.ValidateUser(urluser, request.UserId, token);
+
+                var urluser = _configuration.GetSection("urluser").Get<string>();
+                bool userValid = await _userService.ValidateUser(urluser, token);
+
+
                 if (userValid)
                 {
-                    var response = await _service.Insert(urluser, request);
+                    var response = await _service.Insert(urluser, request, userId);
 
                     if (response == null)
                     {
@@ -105,17 +87,21 @@ namespace PreferencesMicroService.Controllers
         }
 
         [HttpDelete]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete(GenderPreferenceReq request)
         {
             try
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
+                int userId  = _tokenServices.GetUserId(identity);
                 var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+
                 var urluser = _configuration.GetSection("urluser").Get<string>();
-                bool userValid = await _userService.ValidateUser(urluser, request.UserId, token);                
+                bool userValid = await _userService.ValidateUser(urluser, token); 
+                
                 if (userValid)
                 {
-                    var response = await _service.Delete(urluser, request);
+                    var response = await _service.Delete(urluser, request, userId);
 
                     if (response == null)
                     {
@@ -133,5 +119,32 @@ namespace PreferencesMicroService.Controllers
                 return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
             }
         }
+
+        // A este endpoint solo lo dejamos para ver las preferencias de genero del propio usuario
+        //[HttpGet("{UserId}")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //public async Task<IActionResult> GetAllByUserId(int UserId)
+        //{
+        //    try
+        //    {
+        //        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        //        var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+        //        var urluser = _configuration.GetSection("urluser").Get<string>();
+        //        bool userValid = await _userService.ValidateUser(urluser, token);
+        //        var message = _userService.GetMessage();
+        //        var statusCode = _userService.GetStatusCode();
+
+        //        if (userValid)
+        //        {
+        //            var response = await _service.GetAllByUserId(urluser, UserId);
+        //            return Ok(response);
+        //        }
+        //        return new JsonResult(new { Message = message }) { StatusCode = statusCode };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
+        //    }
+        //}
     }
 }
