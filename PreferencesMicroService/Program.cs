@@ -79,7 +79,9 @@ builder.Services.AddTransient<IPreferenceService, PreferenceService>();
 builder.Services.AddTransient<IUserPreferencesService, UserPreferencesService>();
 
 //Cambiar a HTTPClientFactory
-builder.Services.AddTransient<IUserApiService, UserApiService>();
+//builder.Services.AddTransient<IUserApiService, UserApiService>();
+
+builder.Services.AddHttpClient<IUserApiService, UserApiService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>

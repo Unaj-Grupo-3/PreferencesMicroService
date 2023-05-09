@@ -17,13 +17,11 @@ namespace Application.UseCases
         private string _urlGender;
         private HttpClient _httpClient;
 
-        public UserApiService()
+        public UserApiService(HttpClient httpClient)
         {
             _urlUser = "/api/v1/User/";
             _urlGender = "/api/v1/Gender/";
-            var handler = new HttpClientHandler();
-            handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
-            _httpClient = new HttpClient(handler);
+            _httpClient = httpClient;
         }
 
         public async Task<bool> ValidateUser(string urluser, string token)
