@@ -89,7 +89,7 @@ namespace PreferencesMicroService.Controllers
 
                     if (response == null)
                     {
-                        return new JsonResult(new { Message = "Se produjo un error al insertar la preferencia. El interés seleccionado no existe", Response = response }) { StatusCode = 400 };
+                        return new JsonResult(new { Message = "Se produjo un error al insertar la preferencia", Response = response }) { StatusCode = 400 };
                     }
                     return new JsonResult(new { Message = "Se ha actualizado la preferencia exitosamente.", Response = response }) { StatusCode = 201 };
                 }
