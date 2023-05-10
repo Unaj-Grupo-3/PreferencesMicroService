@@ -46,7 +46,7 @@ namespace Application.UseCases
                 {
                     Id = interest.InterestId,
                     Description = interest.Description,
-                    InterestCategory = new InterestCategoryResponse { Id = interest.InterestCategoryId, Description = interest.Description }
+                    InterestCategory = new InterestCategoryResponse { Id = interest.InterestCategoryId, Description = interest.InterestCategory.Description }
                 };
 
                 return response;
@@ -82,7 +82,6 @@ namespace Application.UseCases
             return interestResponses;
         }
 
-        
         public async Task<InterestResponse> Insert(InterestReq request)
         {
             var category = await _categoryQuery.GetById(request.InterestCategoryId);
