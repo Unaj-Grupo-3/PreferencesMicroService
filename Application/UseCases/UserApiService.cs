@@ -123,7 +123,7 @@ namespace Application.UseCases
             catch (System.Net.Http.HttpRequestException ex)
             {
                 _message = "Error en el microservicio de usuarios";
-                _statusCode = 500;
+                _statusCode = 502;
                 return new List<GenderResponse>();
             }
         }
@@ -179,7 +179,8 @@ namespace Application.UseCases
 
                     return responseJson;
                 }
-
+                _message = $"No existe un genero con el id {genderId}";
+                _statusCode = 404;
                 return null;
             }
             catch (System.Net.Http.HttpRequestException ex)

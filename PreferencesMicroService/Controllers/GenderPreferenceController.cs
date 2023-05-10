@@ -2,9 +2,7 @@
 using Application.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 using System.Security.Claims;
 
 namespace PreferencesMicroService.Controllers
@@ -34,16 +32,18 @@ namespace PreferencesMicroService.Controllers
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
                 int userId = _tokenServices.GetUserId(identity);
-                var message = _userService.GetMessage();
-                var statusCode = _userService.GetStatusCode();
                 var urluser = _configuration.GetSection("urluser").Get<string>();
+                var response = await _service.GetAllByUserId(urluser, userId);
 
-                if (userId > 0)
+                if (response == null)
                 {
-                    var response = await _service.GetAllByUserId(urluser, userId);
-                    return Ok(response);
+                    string message = _userService.GetMessage();
+                    int statusCode = _userService.GetStatusCode();
+                    return new JsonResult(new { Message = message }) { StatusCode = statusCode };
                 }
-                return new JsonResult(new { Message = message }) { StatusCode = statusCode };
+
+                return Ok(response);
+                
             }
             catch (Exception ex)
             {
@@ -59,26 +59,16 @@ namespace PreferencesMicroService.Controllers
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
                 int userId = _tokenServices.GetUserId(identity);
-                var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
 
                 var urluser = _configuration.GetSection("urluser").Get<string>();
-                bool userValid = await _userService.ValidateUser(urluser, token);
 
+                var response = await _service.Insert(urluser, request, userId);
 
-                if (userValid)
+                if (response == null)
                 {
-                    var response = await _service.Insert(urluser, request, userId);
-
-                    if (response == null)
-                    {
-                        return new JsonResult(new { Message = "Se produjo un error al insertar la preferencia", Response = response }) { StatusCode = 400 };
-                    }
-                    return new JsonResult(new { Message = "Se ha actualizado la preferencia exitosamente.", Response = response }) { StatusCode = 201 };
+                    return new JsonResult(new { Message = _userService.GetMessage()}) { StatusCode = _userService.GetStatusCode() };
                 }
-                else
-                {
-                    return new JsonResult(new { Message = "Usuario inexistente" }) { StatusCode = 404 };
-                }
+                return new JsonResult(new { Message = "Se ha actualizado la preferencia exitosamente.", Response = response }) { StatusCode = 201 };
             }
             catch (Exception ex)
             {
@@ -94,25 +84,22 @@ namespace PreferencesMicroService.Controllers
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
                 int userId  = _tokenServices.GetUserId(identity);
-                var token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
-
+  
                 var urluser = _configuration.GetSection("urluser").Get<string>();
-                bool userValid = await _userService.ValidateUser(urluser, token); 
-                
-                if (userValid)
-                {
-                    var response = await _service.Delete(urluser, request, userId);
 
-                    if (response == null)
-                    {
-                        return new JsonResult(new { Message = "Se produjo un error al eliminar la preferencia. El género seleccionado no existe", Response = response }) { StatusCode = 400 };
-                    }
-                    return new JsonResult(new { Message = "Se ha eliminado la preferencia exitosamente.", Response = response }) { StatusCode = 200 };
-                }
-                else
+                var response = await _service.Delete(urluser, request, userId);
+
+                if (_userService.GetStatusCode() == 500)
                 {
-                    return new JsonResult(new { Message = "Usuario inexistente" }) { StatusCode = 404 };
+                    return new JsonResult(new { Message = _userService.GetMessage() }) { StatusCode = _userService.GetStatusCode() };
                 }
+
+                if (response == null)
+                {
+                    return new JsonResult(new { Message = "Se produjo un error al eliminar la preferencia. El género seleccionado no existe", Response = response }) { StatusCode = 404 };
+                }
+                return new JsonResult(new { Message = "Se ha eliminado la preferencia exitosamente.", Response = response }) { StatusCode = 200 };
+
             }
             catch (Exception ex)
             {

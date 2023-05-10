@@ -23,6 +23,11 @@ namespace Application.UseCases
             var lista = await _query.GetAllByUserId(userId);
             var listaGenders = await _userService.GetAllGenders(userurl);
 
+            if (!listaGenders.Any())
+            {
+                return null;
+            }
+
             if (lista.Any() && listaGenders.Any())
             {
                 foreach (var item in lista)
