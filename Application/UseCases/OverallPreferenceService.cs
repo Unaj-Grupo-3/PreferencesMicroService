@@ -152,5 +152,28 @@ namespace Application.UseCases
             }
         }
 
+        public async Task<IEnumerable<OverallPreferenceResponse>> GetByListId(List<int> userIds)
+        {
+            List<OverallPreferenceResponse> listaResponse = new List<OverallPreferenceResponse>();
+            var lista = await _query.GetByListId(userIds);
+
+            if (lista.Any())
+            {
+                foreach (var item in lista)
+                {
+                    OverallPreferenceResponse response = new OverallPreferenceResponse
+                    {
+                        Id = item.OverallPreferenceId,
+                        UserId = item.UserId,
+                        SinceAge = item.SinceAge,
+                        UntilAge = item.UntilAge,
+                        Distance = item.Distance
+                    };
+                    listaResponse.Add(response);
+                }
+            }
+
+            return listaResponse;
+        }
     }
 }

@@ -26,6 +26,7 @@ namespace Application.UseCases
             {
                 List<int> interests = new List<int>();
                 List<int> genders = new List<int>();
+                List<int> ownsInterest = new List<int>();
 
                 var preferenceResponse = await _preferenceService.GetAllByUserId(overallPreference.UserId);
                 var genderPreferenceResponse = await _genderPreferenceService.GetAllByUserId(urluser, overallPreference.UserId);
@@ -40,6 +41,10 @@ namespace Application.UseCases
                             if (item.Like)
                             {
                                 interests.Add(item.Interest.Id);
+                            }
+                            if (item.OwnInterest)
+                            {
+                                ownsInterest.Add(item.Interest.Id);
                             }
                         }
                     }
@@ -60,7 +65,8 @@ namespace Application.UseCases
                         UntilAge = overallPreference.UntilAge,
                         Distance = overallPreference.Distance,
                         GendersPreferencesId = genders,
-                        InterestPreferencesId = interests
+                        InterestPreferencesId = interests,
+                        OwnInterestPreferencesId = ownsInterest
                     };
 
                     usersPreferences.Add(response);
@@ -116,6 +122,120 @@ namespace Application.UseCases
             }
 
             return null;
+        }
+
+        public async Task<IEnumerable<UserPreferencesResponseFull>> GetFullByListId(string urluser, List<int> userIds)
+        {
+            List<UserPreferencesResponseFull> usersPreferences = new List<UserPreferencesResponseFull>();
+
+            var overallPreferenceResponses = await _overallPreferenceService.GetByListId(userIds);
+
+            foreach (var overallPreference in overallPreferenceResponses)
+            {
+                //List<InterestResponse> interests = new List<InterestResponse>();
+                //List<GenderResponse> genders = new List<GenderResponse>();
+
+                var preferenceResponse = await _preferenceService.GetAllByUserIdFull(overallPreference.UserId);
+                var genderPreferenceResponse = await _genderPreferenceService.GetAllByUserId(urluser, overallPreference.UserId);
+
+                if (overallPreference != null)
+                {
+
+                    //if (preferenceResponse.Any())
+                    //{
+                    //    foreach (var item in preferenceResponse)
+                    //    {
+                    //        if (item.Like)
+                    //        {
+                    //            interests.Add(item.Interest);
+                    //        }
+                    //    }
+                    //}
+
+                    //if (genderPreferenceResponse.Any())
+                    //{
+                    //    foreach (var item in genderPreferenceResponse)
+                    //    {
+                    //        genders.Add(item);
+                    //    }
+                    //}
+
+
+                    UserPreferencesResponseFull response = new UserPreferencesResponseFull
+                    {
+                        UserId = overallPreference.UserId,
+                        SinceAge = overallPreference.SinceAge,
+                        UntilAge = overallPreference.UntilAge,
+                        Distance = overallPreference.Distance,
+                        GendersPreferencesId = genderPreferenceResponse,
+                        InterestPreferencesId = preferenceResponse
+                    };
+
+                    usersPreferences.Add(response);
+                }
+            }
+
+            return usersPreferences;
+        }
+
+        public async Task<IEnumerable<UserPreferencesResponse>> GetSimpleByListId(string urluser, List<int> userIds)
+        {
+            List<UserPreferencesResponse> usersPreferences = new List<UserPreferencesResponse>();
+
+            var overallPreferenceResponses = await _overallPreferenceService.GetByListId(userIds);
+
+            foreach (var overallPreference in overallPreferenceResponses)
+            {
+                List<int> interests = new List<int>();
+                List<int> genders = new List<int>();
+                List<int> ownsInterest = new List<int>();
+
+                var preferenceResponse = await _preferenceService.GetAllByUserId(overallPreference.UserId);
+                var genderPreferenceResponse = await _genderPreferenceService.GetAllByUserId(urluser, overallPreference.UserId);
+
+                if (overallPreference != null)
+                {
+
+                    if (preferenceResponse.Any())
+                    {
+                        foreach (var item in preferenceResponse)
+                        {
+                            if (item.Like)
+                            {
+                                interests.Add(item.Interest.Id);
+                            }
+                            if (item.OwnInterest)
+                            {
+                                ownsInterest.Add(item.Interest.Id);
+                            }
+                        }
+                    }
+
+                    if (genderPreferenceResponse.Any())
+                    {
+                        foreach (var item in genderPreferenceResponse)
+                        {
+                            genders.Add(item.GenderId);
+                        }
+                    }
+
+
+                    UserPreferencesResponse response = new UserPreferencesResponse
+                    {
+                        UserId = overallPreference.UserId,
+                        SinceAge = overallPreference.SinceAge,
+                        UntilAge = overallPreference.UntilAge,
+                        Distance = overallPreference.Distance,
+                        GendersPreferencesId = genders,
+                        InterestPreferencesId = interests,
+                        OwnInterestPreferencesId = ownsInterest
+                    };
+
+                    usersPreferences.Add(response);
+                }
+            }
+
+            return usersPreferences;
         }
     }
 }
