@@ -25,5 +25,13 @@ namespace Infrastructure.Queries
             var lista = await _context.OverallPreferenceDb.Where(i => i.UserId == UserId).FirstOrDefaultAsync();
             return lista;
         }
+
+        public async Task<IEnumerable<OverallPreference>> GetByListId(List<int> userIds)
+        {
+            List<OverallPreference> lista = await _context.OverallPreferenceDb
+                                                  .Where(u => userIds.Contains(u.UserId)).ToListAsync();
+
+            return lista;
+        }
     }
 }

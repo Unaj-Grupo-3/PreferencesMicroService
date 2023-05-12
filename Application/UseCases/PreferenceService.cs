@@ -74,6 +74,38 @@ namespace Application.UseCases
 
             return listaResponse;
         }
+        //Utilizo para busqueda "FULL"
+        public async Task<IEnumerable<PreferenceResponseFull>> GetAllByUserIdFull(int UserId)
+        {
+            List<PreferenceResponseFull> listaResponse = new List<PreferenceResponseFull>();
+            var lista = await _query.GetAllByUserId(UserId);
+
+            if (lista.Any())
+            {
+                foreach (var item in lista)
+                {
+                    PreferenceResponseFull response = new PreferenceResponseFull
+                    {
+                        //UserId = item.UserId,
+                        Interest = new InterestResponse
+                        {
+                            Id = item.Interest.InterestId,
+                            Description = item.Interest.Description,
+                            InterestCategory = new InterestCategoryResponse
+                            {
+                                Id = item.Interest.InterestCategory.InterestCategoryId,
+                                Description = item.Interest.InterestCategory.Description
+                            }
+                        },
+                        OwnInterest = item.OwnInterest,
+                        Like = item.Like
+                    };
+                    listaResponse.Add(response);
+                }
+            }
+
+            return listaResponse;
+        }
 
         public async Task<PreferenceResponse> GetByid(int UserId, int InterestId)
         {

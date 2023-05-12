@@ -24,9 +24,14 @@ builder.Services.AddSwaggerGen(c =>
 // INYECCION POR DEPENDENCIAS//ver timelife
 //builder.Services.AddScoped<IClass, Class>();
 
-//CONECTION STRING
-var connectionString = builder.Configuration["ConnectionString"];
-builder.Services.AddDbContext<AppDbContext>(op => op.UseSqlServer(connectionString));
+////CONECTION STRING
+//var connectionString = builder.Configuration["ConnectionString"];
+//builder.Services.AddDbContext<AppDbContext>(op => op.UseSqlServer(connectionString));
+//Custom    
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 //TRANSIENTS
 builder.Services.AddTransient<IGenderPreferenceCommand, GenderPreferenceCommand>();
