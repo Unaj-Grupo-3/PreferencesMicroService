@@ -18,15 +18,42 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Microservicio Preferencias", Version = "v1" });
-});
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Expreso de las diez - Microservicio de Preferencias", Version = "v1" });
 
+    //Boton Autorize (Swagger)
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Jwt Authorization",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 // INYECCION POR DEPENDENCIAS//ver timelife
 //builder.Services.AddScoped<IClass, Class>();
 
 //CONECTION STRING
 var connectionString = builder.Configuration["ConnectionString"];
 builder.Services.AddDbContext<AppDbContext>(op => op.UseSqlServer(connectionString));
+
+//SINGLETON
+builder.Services.AddSingleton<ITokenServices, TokenServices>();
 
 //TRANSIENTS
 builder.Services.AddTransient<IGenderPreferenceCommand, GenderPreferenceCommand>();
@@ -49,8 +76,12 @@ builder.Services.AddTransient<IPreferenceCommand, PreferenceCommand>();
 builder.Services.AddTransient<IPreferenceQuery, PreferenceQuery>();
 builder.Services.AddTransient<IPreferenceService, PreferenceService>();
 
-builder.Services.AddTransient<IUserApiService, UserApiService>();
 builder.Services.AddTransient<IUserPreferencesService, UserPreferencesService>();
+
+//Cambiar a HTTPClientFactory
+//builder.Services.AddTransient<IUserApiService, UserApiService>();
+
+builder.Services.AddHttpClient<IUserApiService, UserApiService>().Services.AddScoped<IUserApiService, UserApiService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
@@ -75,6 +106,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
+
+app.UseAuthentication();
+
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();

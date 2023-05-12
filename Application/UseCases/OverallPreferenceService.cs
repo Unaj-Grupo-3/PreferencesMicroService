@@ -39,9 +39,9 @@ namespace Application.UseCases
             return listaResponse;
         }
 
-        public async Task<OverallPreferenceResponse> GetByUserId(int UserId)
+        public async Task<OverallPreferenceResponse> GetByUserId(int userId)
         {            
-            var overallPreference = await _query.GetByUserId(UserId);
+            var overallPreference = await _query.GetByUserId(userId);
 
             if (overallPreference != null)
             {                
@@ -60,13 +60,13 @@ namespace Application.UseCases
             return null;
         }
 
-        public async Task<OverallPreferenceResponse> Insert(OverallPreferenceReq request)
+        public async Task<OverallPreferenceResponse> Insert(OverallPreferenceReq request, int userId)
         {            
-            var responsePreference = await _query.GetByUserId(request.UserId);
+            var responsePreference = await _query.GetByUserId(userId);
 
             OverallPreference preference = new OverallPreference
             {                
-                UserId = request.UserId,
+                UserId = userId,
                 SinceAge = request.SinceAge,
                 UntilAge = request.UntilAge,
                 Distance = request.Distance
@@ -93,9 +93,9 @@ namespace Application.UseCases
             return response;            
         }
 
-        public async Task<OverallPreferenceResponse> Update(OverallPreferenceReq request)
+        public async Task<OverallPreferenceResponse> Update(OverallPreferenceReq request, int userId)
         {
-            OverallPreference preference = await _query.GetByUserId(request.UserId);
+            OverallPreference preference = await _query.GetByUserId(userId);
 
             if (preference != null)
             {
@@ -120,11 +120,12 @@ namespace Application.UseCases
 
             return null;
         }
-        public async Task<OverallPreferenceResponse> Delete(int UserId)
+
+        public async Task<OverallPreferenceResponse> Delete(int userId)
         {
             try
             {
-                OverallPreference preference = await _query.GetByUserId(UserId);
+                OverallPreference preference = await _query.GetByUserId(userId);
 
                 if (preference != null)
                 {

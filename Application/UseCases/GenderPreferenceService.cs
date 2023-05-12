@@ -23,6 +23,11 @@ namespace Application.UseCases
             var lista = await _query.GetAllByUserId(userId);
             var listaGenders = await _userService.GetAllGenders(userurl);
 
+            if (!listaGenders.Any())
+            {
+                return null;
+            }
+
             if (lista.Any() && listaGenders.Any())
             {
                 foreach (var item in lista)
@@ -40,7 +45,7 @@ namespace Application.UseCases
             return listaResponse;
         }
 
-        public async Task<GenderPreferenceResponse> Insert(string userurl, GenderPreferenceReq request)
+        public async Task<GenderPreferenceResponse> Insert(string userurl, GenderPreferenceReq request, int userId)
         {
             var gender = await _userService.GetGenderById(userurl, request.GenderId);
 
@@ -48,11 +53,11 @@ namespace Application.UseCases
             {
                 GenderPreference genderPreference = new GenderPreference
                 {
-                    UserId = request.UserId,
+                    UserId = userId,
                     GenderId = request.GenderId
                 };
 
-                var responsePreference = await _query.GetById(request.UserId, request.GenderId);
+                var responsePreference = await _query.GetById(userId, request.GenderId);
 
                 if (responsePreference == null)
                 {
@@ -76,7 +81,7 @@ namespace Application.UseCases
             return null;
         }
 
-        public async Task<GenderPreferenceResponse> Delete(string userurl, GenderPreferenceReq request)
+        public async Task<GenderPreferenceResponse> Delete(string userurl, GenderPreferenceReq request, int userId)
         {
             var gender = await _userService.GetGenderById(userurl, request.GenderId);
 
@@ -84,11 +89,11 @@ namespace Application.UseCases
             {
                 GenderPreference genderPreference = new GenderPreference
                 {
-                    UserId = request.UserId,
+                    UserId = userId,
                     GenderId = request.GenderId
                 };
 
-                var responsePreference = await _query.GetById(request.UserId, request.GenderId);
+                var responsePreference = await _query.GetById(userId, request.GenderId);
 
                 if (responsePreference != null)
                 {
