@@ -6,5 +6,7 @@ namespace Application.Interfaces
     {
         Task<IEnumerable<UserPreferencesResponse>> GetAll(string urluser);
         Task<UserPreferencesResponse> GetByUserId(string urluser, int UserId);
+        Task<IEnumerable<UserPreferencesResponseFull>> GetFullByListId(string urluser, List<int> userIds);
+        Task<IEnumerable<UserPreferencesResponse>> GetSimpleByListId(string urluser, List<int> userIds);
     }
 }
