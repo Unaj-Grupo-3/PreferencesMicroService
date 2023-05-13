@@ -4,11 +4,14 @@ namespace Application.Interfaces
 {
     public interface IPreferenceService
     {
-        Task<PreferenceResponse> Insert(PreferenceReq request);
+        Task<PreferenceResponse> Insert(PreferenceReq request, int userId);
         Task<IEnumerable<PreferenceResponse>> GetAll();
-        Task<IEnumerable<PreferenceResponse>> GetAllByUserId(int UserId);
-        Task<PreferenceResponse> GetByid(int UserId, int InterestId);
-        Task<PreferenceResponse> Update(PreferenceReq request);
-        Task<PreferenceResponse> Delete(PreferenceReqId request);
+
+        Task<IEnumerable<PreferenceResponseFull>> GetAllByUserIdFull(int UserId);
+       
+        Task<IEnumerable<PreferenceResponse>> GetAllByUserId(int userId);
+        Task<PreferenceResponse> GetByid(int userId, int InterestId);
+        Task<PreferenceResponse> Update(PreferenceReq request, int userId);
+        Task<PreferenceResponse> Delete(PreferenceReqId request, int userId);
     }
 }

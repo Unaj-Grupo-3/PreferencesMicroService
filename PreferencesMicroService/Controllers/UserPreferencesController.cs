@@ -33,15 +33,23 @@ namespace PreferencesMicroService.Controllers
             }
         }
 
-        [HttpGet("{UserId}")]
-        public async Task<IActionResult> GetByUserId(int UserId)
+        [HttpGet("Ids")]
+        public async Task<IActionResult> GetUserByListId([FromQuery] List<int> userIds, bool fullResponse)
         {
             try
             {
-
-                var urluser = _configuration.GetSection("urluser").Get<string>();
-                var response = await _userPreferencesService.GetByUserId(urluser, UserId);
-                return Ok(response);
+                if (fullResponse)
+                {
+                    var urluser = _configuration.GetSection("urluser").Get<string>();
+                    var response = await _userPreferencesService.GetFullByListId(urluser, userIds);
+                    return Ok(response);
+                }
+                else
+                {
+                    var urluser = _configuration.GetSection("urluser").Get<string>();
+                    var response = await _userPreferencesService.GetSimpleByListId(urluser, userIds);
+                    return Ok(response);
+                }
             }
             catch (Exception ex)
             {

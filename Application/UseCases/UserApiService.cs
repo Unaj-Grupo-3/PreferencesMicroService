@@ -2,7 +2,6 @@ using Application.Interfaces;
 using Application.Models;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -17,23 +16,21 @@ namespace Application.UseCases
         private string _urlGender;
         private HttpClient _httpClient;
 
-        public UserApiService()
+        public UserApiService(HttpClient httpClient)
         {
             _urlUser = "/api/v1/User/";
             _urlGender = "/api/v1/Gender/";
-            var handler = new HttpClientHandler();
-            handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
-            _httpClient = new HttpClient(handler);
+            _httpClient = httpClient;
         }
 
-        public async Task<bool> ValidateUser(string urluser, int userId, string token)
+        public async Task<bool> ValidateUser(string urluser, string token)
         {
             try
             {
-                var content = JsonContent.Create(userId);
+                //var content = JsonContent.Create(userId);
                 _httpClient.DefaultRequestHeaders.Authorization
                          = new AuthenticationHeaderValue("Bearer", token);
-                var responseApi = await _httpClient.GetAsync(urluser + _urlUser +  userId);
+                var responseApi = await _httpClient.GetAsync(urluser + _urlUser + "me" );
                 var responseStatusCode = responseApi.IsSuccessStatusCode;
 
                 if (responseApi.IsSuccessStatusCode)
@@ -48,6 +45,7 @@ namespace Application.UseCases
                 {
                     _message = "El usuario no existe";
                     _statusCode = (int)responseApi.StatusCode;
+                    return false;
                 }
 
                 return true;
@@ -124,7 +122,7 @@ namespace Application.UseCases
             catch (System.Net.Http.HttpRequestException ex)
             {
                 _message = "Error en el microservicio de usuarios";
-                _statusCode = 500;
+                _statusCode = 502;
                 return new List<GenderResponse>();
             }
         }
@@ -180,7 +178,8 @@ namespace Application.UseCases
 
                     return responseJson;
                 }
-
+                _message = $"No existe un genero con el id {genderId}";
+                _statusCode = 404;
                 return null;
             }
             catch (System.Net.Http.HttpRequestException ex)

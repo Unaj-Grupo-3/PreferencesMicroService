@@ -1,10 +1,9 @@
-using Domain.Entities;
-
+﻿
 namespace Application.Models
 {
-    public class PreferenceReq
+    public class PreferenceResponseFull
     {
-        public int InterestId { get; set; } //FK
+        public InterestResponse Interest { get; set; }
         public bool OwnInterest { get; set; }
         public bool Like { get; set; }
     }

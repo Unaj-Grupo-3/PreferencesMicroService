@@ -96,7 +96,7 @@ namespace Application.UseCases
             return response;
         }
 
-        public async Task<PreferenceResponse> Insert(PreferenceReq request)
+        public async Task<PreferenceResponse> Insert(PreferenceReq request, int userId)
         {
             var interest = await _interestService.GetById(request.InterestId);
 
@@ -106,11 +106,11 @@ namespace Application.UseCases
             }
             else
             {
-                var responsePreference = await _query.GetById(request.UserId, request.InterestId);
+                var responsePreference = await _query.GetById(userId, request.InterestId);
 
                 Preference preference = new Preference
                 {
-                    UserId = request.UserId,
+                    UserId = userId,
                     InterestId = request.InterestId,
                     OwnInterest = request.OwnInterest,
                     Like = request.Like
@@ -150,14 +150,14 @@ namespace Application.UseCases
             }            
         }
 
-        public async Task<PreferenceResponse> Update(PreferenceReq request)
+        public async Task<PreferenceResponse> Update(PreferenceReq request, int userId)
         {
-            Preference preference = await _query.GetById(request.UserId, request.InterestId);
+            Preference preference = await _query.GetById(userId, request.InterestId);
             var interest = await _interestService.GetById(request.InterestId);
 
             if (preference != null && interest != null)
             {
-                preference.UserId = request.UserId;
+                preference.UserId = userId;
                 preference.InterestId = request.InterestId;
                 preference.OwnInterest = request.OwnInterest;
                 preference.Like = request.Like;
@@ -166,7 +166,7 @@ namespace Application.UseCases
 
                 PreferenceResponse response = new PreferenceResponse
                 {
-                    UserId = request.UserId,
+                    UserId = userId,
                     Interest = new InterestResponse
                     {
                         Id = interest.Id,
@@ -187,11 +187,11 @@ namespace Application.UseCases
             return null;
         }
 
-        public async Task<PreferenceResponse> Delete(PreferenceReqId request)
+        public async Task<PreferenceResponse> Delete(PreferenceReqId request, int userId)
         {
             try
             {
-                var preferenceResponse = await _query.GetById(request.UserId, request.InterestId);
+                var preferenceResponse = await _query.GetById(userId, request.InterestId);
 
                 if (preferenceResponse != null)
                 {
@@ -227,5 +227,39 @@ namespace Application.UseCases
                 return null;
             }
         }
+
+        //Utilizo para busqueda "FULL"
+        public async Task<IEnumerable<PreferenceResponseFull>> GetAllByUserIdFull(int UserId)
+        {
+            List<PreferenceResponseFull> listaResponse = new List<PreferenceResponseFull>();
+            var lista = await _query.GetAllByUserId(UserId);
+
+            if (lista.Any())
+            {
+                foreach (var item in lista)
+                {
+                    PreferenceResponseFull response = new PreferenceResponseFull
+                    {
+                        //UserId = item.UserId,
+                        Interest = new InterestResponse
+                        {
+                            Id = item.Interest.InterestId,
+                            Description = item.Interest.Description,
+                            InterestCategory = new InterestCategoryResponse
+                            {
+                                Id = item.Interest.InterestCategory.InterestCategoryId,
+                                Description = item.Interest.InterestCategory.Description
+                            }
+                        },
+                        OwnInterest = item.OwnInterest,
+                        Like = item.Like
+                    };
+                    listaResponse.Add(response);
+                }
+            }
+
+            return listaResponse;
+        }
+
     }
 }
