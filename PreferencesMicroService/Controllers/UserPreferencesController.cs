@@ -1,6 +1,4 @@
 ﻿using Application.Interfaces;
-using Application.UseCases;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PreferencesMicroService.Controllers

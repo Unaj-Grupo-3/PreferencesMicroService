@@ -24,7 +24,7 @@ namespace PreferencesMicroService.Controllers
             _tokenServices = tokenServices;
         }
 
-        
+
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetAllByUserId()
@@ -41,7 +41,7 @@ namespace PreferencesMicroService.Controllers
             catch (Exception ex)
             {
                 return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
-            }    
+            }
         }
 
         [HttpPost]
@@ -75,7 +75,7 @@ namespace PreferencesMicroService.Controllers
             try
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
-           
+
                 int userId = _tokenServices.GetUserId(identity);
 
                 var response = await _service.Update(request, userId);
@@ -86,7 +86,7 @@ namespace PreferencesMicroService.Controllers
                 else
                 {
                     return new JsonResult(new { Message = "La preferencia ingresada no existe" }) { StatusCode = 400 };
-                }                
+                }
             }
             catch (Exception ex)
             {

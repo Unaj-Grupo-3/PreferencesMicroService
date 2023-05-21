@@ -1,12 +1,8 @@
 ﻿using Application.Interfaces;
 using Application.Models;
-using Azure.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Net.Http.Headers;
 using System.Security.Claims;
 
 namespace PreferencesMicroService.Controllers
@@ -73,7 +69,13 @@ namespace PreferencesMicroService.Controllers
             }
             catch (Exception ex)
             {
-                return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
+                if (ex.Message== "La edad debe ser mayor a 18 años"||ex.Message== "La edad :Hasta debe ser mayor a edad :Desde")
+                {
+                    return new JsonResult(new { Message = ex.Message }) { StatusCode = 400 };
+                }
+                else
+
+                    return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
             }
         }
 
@@ -99,6 +101,10 @@ namespace PreferencesMicroService.Controllers
             }
             catch (Exception ex)
             {
+                if (ex.Message == "La edad debe ser mayor a 18 años" || ex.Message == "La edad :Hasta debe ser mayor a edad :Desde")
+                {
+                    return new JsonResult(new { Message = ex.Message }) { StatusCode = 400 };
+                }
                 return new JsonResult(new { Message = "Se ha producido un error interno en el servidor." }) { StatusCode = 500 };
             }
         }

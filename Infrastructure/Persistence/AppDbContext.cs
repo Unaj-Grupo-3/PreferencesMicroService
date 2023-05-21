@@ -46,7 +46,7 @@ namespace Infrastructure.Persistence
             modelBuilder.Entity<Preference>(entity =>
             {
                 entity.ToTable("Preference");
-                entity.HasKey(p => new { p.UserId, p.InterestId } );
+                entity.HasKey(p => new { p.UserId, p.InterestId });
 
                 //RELACION
                 entity

@@ -4,7 +4,7 @@ using Domain.Entities;
 
 namespace Application.UseCases
 {
-    public class PreferenceService: IPreferenceService
+    public class PreferenceService : IPreferenceService
     {
         private readonly IPreferenceQuery _query;
         private readonly IPreferenceCommand _command;
@@ -22,14 +22,17 @@ namespace Application.UseCases
             List<PreferenceResponse> listaResponse = new List<PreferenceResponse>();
             var lista = await _query.GetAll();
 
-            if(lista.Any())
+            if (lista.Any())
             {
                 foreach (var item in lista)
                 {
                     PreferenceResponse response = new PreferenceResponse
                     {
                         UserId = item.UserId,
-                        Interest = new InterestResponse { Id = item.Interest.InterestId, Description = item.Interest.Description,
+                        Interest = new InterestResponse
+                        {
+                            Id = item.Interest.InterestId,
+                            Description = item.Interest.Description,
                             InterestCategory = new InterestCategoryResponse
                             {
                                 Id = item.Interest.InterestCategory.InterestCategoryId,
@@ -58,7 +61,11 @@ namespace Application.UseCases
                     PreferenceResponse response = new PreferenceResponse
                     {
                         UserId = item.UserId,
-                        Interest = new InterestResponse { Id = item.Interest.InterestId, Description = item.Interest.Description,
+                        Interest = new InterestResponse
+                        {
+                            Id = item.Interest.InterestId,
+                            Description = item.Interest.Description,
+
                             InterestCategory = new InterestCategoryResponse
                             {
                                 Id = item.Interest.InterestCategory.InterestCategoryId,
@@ -82,7 +89,10 @@ namespace Application.UseCases
             PreferenceResponse response = new PreferenceResponse
             {
                 UserId = responsePreference.UserId,
-                Interest = new InterestResponse { Id = responsePreference.Interest.InterestId, Description = responsePreference.Interest.Description,
+                Interest = new InterestResponse
+                {
+                    Id = responsePreference.Interest.InterestId,
+                    Description = responsePreference.Interest.Description,
                     InterestCategory = new InterestCategoryResponse
                     {
                         Id = responsePreference.Interest.InterestCategory.InterestCategoryId,
@@ -135,7 +145,10 @@ namespace Application.UseCases
                 PreferenceResponse response = new PreferenceResponse
                 {
                     UserId = preference.UserId,
-                    Interest = new InterestResponse { Id = interest.Id, Description = interest.Description,
+                    Interest = new InterestResponse
+                    {
+                        Id = interest.Id,
+                        Description = interest.Description,
                         InterestCategory = new InterestCategoryResponse
                         {
                             Id = interest.InterestCategory.Id,
@@ -147,7 +160,7 @@ namespace Application.UseCases
                 };
 
                 return response;
-            }            
+            }
         }
 
         public async Task<PreferenceResponse> Update(PreferenceReq request, int userId)
@@ -229,37 +242,103 @@ namespace Application.UseCases
         }
 
         //Utilizo para busqueda "FULL"
-        public async Task<IEnumerable<PreferenceResponseFull>> GetAllByUserIdFull(int UserId)
+        //public async Task<IEnumerable<PreferenceResponseFull>> GetAllByUserIdFull(int UserId)
+        //{
+        //    List<PreferenceResponseFull> listaResponse = new List<PreferenceResponseFull>();
+
+        //    var lista = await _query.GetAllByUserId(UserId);
+
+        //    if (lista.Any())
+        //    {
+        //        foreach (var item in lista)
+        //        {
+        //            PreferenceResponseFull response = new PreferenceResponseFull
+        //            {
+        //                //UserId = item.UserId,
+        //                Interest = new InterestResponse
+        //                {
+        //                    Id = item.Interest.InterestId,
+        //                    Description = item.Interest.Description,
+        //                    InterestCategory = new InterestCategoryResponse
+        //                    {
+        //                        Id = item.Interest.InterestCategory.InterestCategoryId,
+        //                        Description = item.Interest.InterestCategory.Description
+        //                    }
+        //                },
+        //                OwnInterest = item.OwnInterest,
+        //                Like = item.Like
+        //            };
+        //            listaResponse.Add(response);
+        //        }
+        //    }
+
+        //    return listaResponse;
+        //}
+
+        public async Task<IEnumerable<InterestCategoryResponse_2>> GetAllByUserIdFull(int UserId)
         {
-            List<PreferenceResponseFull> listaResponse = new List<PreferenceResponseFull>();
+            List<PreferenceResponseFull_1> listaResponse = new List<PreferenceResponseFull_1>();
+
+            List<InterestCategoryResponse_2> lis = new List<InterestCategoryResponse_2>();
+
             var lista = await _query.GetAllByUserId(UserId);
 
             if (lista.Any())
             {
-                foreach (var item in lista)
+                //foreach (var item in lista)
+                //{
+
+                //PreferenceResponseFull_1 response = new PreferenceResponseFull_1
+                //{
+                //    Interest = new InterestResponse_1
+                //    {
+                //        Id = item.Interest.InterestId,
+                //        Description = item.Interest.Description
+                //    },
+                //    OwnInterest = item.OwnInterest,
+                //    Like = item.Like
+                //};
+                //listaResponse.Add(response);
+
+                //InterestCategoryResponse_2 responseeeee = new InterestCategoryResponse_2
+                //{
+                //    Id = item.Interest.InterestCategory.InterestCategoryId,
+                //    Description = item.Interest.InterestCategory.Description,
+                //    InterestPreferencesId = response
+                //};
+                //lis.Add(responseeeee);
+                //}
+
+                var groupedPreferences = lista.GroupBy(p => p.Interest.InterestCategory.InterestCategoryId);
+
+                foreach (var grupo in groupedPreferences)
                 {
-                    PreferenceResponseFull response = new PreferenceResponseFull
+                    var categoryId = grupo.Key;
+                    var preferences = grupo.Select(item => new PreferenceResponseFull_1
                     {
-                        //UserId = item.UserId,
-                        Interest = new InterestResponse
+                        Interest = new InterestResponse_1
                         {
                             Id = item.Interest.InterestId,
-                            Description = item.Interest.Description,
-                            InterestCategory = new InterestCategoryResponse
-                            {
-                                Id = item.Interest.InterestCategory.InterestCategoryId,
-                                Description = item.Interest.InterestCategory.Description
-                            }
+                            Description = item.Interest.Description
                         },
                         OwnInterest = item.OwnInterest,
                         Like = item.Like
+                    }).ToList();
+
+                    var categoryDescription = grupo.FirstOrDefault()?.Interest.InterestCategory?.Description;
+
+                    var categoryResponse = new InterestCategoryResponse_2
+                    {
+                        Id = categoryId,
+                        Description = categoryDescription,
+                        InterestPreferencesId = preferences
                     };
-                    listaResponse.Add(response);
+
+                    lis.Add(categoryResponse);
                 }
             }
 
-            return listaResponse;
+            return lis;
         }
-
     }
 }

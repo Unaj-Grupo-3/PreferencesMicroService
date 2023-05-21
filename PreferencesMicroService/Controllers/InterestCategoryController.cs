@@ -1,6 +1,5 @@
 ﻿using Application.Interfaces;
 using Application.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PreferencesMicroService.Controllers
@@ -21,7 +20,7 @@ namespace PreferencesMicroService.Controllers
         {
             try
             {
-                var response = await _service.GetAll();   
+                var response = await _service.GetAll();
                 return Ok(response);
             }
             catch (Exception ex)

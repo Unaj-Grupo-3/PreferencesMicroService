@@ -47,10 +47,13 @@ builder.Services.AddSwaggerGen(c =>
 });
 // INYECCION POR DEPENDENCIAS//ver timelife
 //builder.Services.AddScoped<IClass, Class>();
-
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 //CONECTION STRING
-var connectionString = builder.Configuration["ConnectionString"];
-builder.Services.AddDbContext<AppDbContext>(op => op.UseSqlServer(connectionString));
+//var connectionString = builder.Configuration["ConnectionString"];
+//builder.Services.AddDbContext<AppDbContext>(op => op.UseSqlServer(connectionString));
 
 //SINGLETON
 builder.Services.AddSingleton<ITokenServices, TokenServices>();

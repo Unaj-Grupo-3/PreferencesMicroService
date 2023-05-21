@@ -1,6 +1,5 @@
 ﻿using Application.Interfaces;
 using Application.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PreferencesMicroService.Controllers
@@ -14,7 +13,7 @@ namespace PreferencesMicroService.Controllers
         public InterestController(IInterestService service)
         {
             _service = service;
-        }       
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -31,11 +30,11 @@ namespace PreferencesMicroService.Controllers
         }
 
         [HttpGet("{InterestCategoryId}")]
-        public async Task<IActionResult> GetAllByCategory(int InterestCategoryId)
+        public async Task<IActionResult> GetByCategory(int InterestCategoryId)
         {
             try
             {
-                var response = await _service.GetAllByCategory(InterestCategoryId);
+                var response = await _service.GetByIdCategory(InterestCategoryId);
                 return Ok(response);
             }
             catch (Exception ex)
