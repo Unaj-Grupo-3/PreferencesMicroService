@@ -40,11 +40,11 @@ namespace Application.UseCases
         }
 
         public async Task<OverallPreferenceResponse> GetByUserId(int userId)
-        {            
+        {
             var overallPreference = await _query.GetByUserId(userId);
 
             if (overallPreference != null)
-            {                
+            {
                 OverallPreferenceResponse response = new OverallPreferenceResponse
                 {
                     Id = overallPreference.OverallPreferenceId,
@@ -61,11 +61,19 @@ namespace Application.UseCases
         }
 
         public async Task<OverallPreferenceResponse> Insert(OverallPreferenceReq request, int userId)
-        {            
+        {
+            if (request.SinceAge<18)
+            {
+                throw new ArgumentException("La edad debe ser mayor a 18 años");
+            }
+            if (request.UntilAge<request.SinceAge)
+            {
+                throw new ArgumentException("La edad :Hasta debe ser mayor a edad :Desde");
+            }
             var responsePreference = await _query.GetByUserId(userId);
 
             OverallPreference preference = new OverallPreference
-            {                
+            {
                 UserId = userId,
                 SinceAge = request.SinceAge,
                 UntilAge = request.UntilAge,
@@ -90,11 +98,19 @@ namespace Application.UseCases
                 Distance = preference.Distance
             };
 
-            return response;            
+            return response;
         }
 
         public async Task<OverallPreferenceResponse> Update(OverallPreferenceReq request, int userId)
         {
+            if (request.SinceAge < 18)
+            {
+                throw new ArgumentException("La edad debe ser mayor a 18 años");
+            }
+            if (request.UntilAge < request.SinceAge)
+            {
+                throw new ArgumentException("La edad :Hasta debe ser mayor a edad :Desde");
+            }
             OverallPreference preference = await _query.GetByUserId(userId);
 
             if (preference != null)

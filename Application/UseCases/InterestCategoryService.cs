@@ -52,7 +52,7 @@ namespace Application.UseCases
         }
 
         public async Task<InterestCategoryResponse> Update(InterestCategoryReq request, int id)
-        {            
+        {
             InterestCategory interestCategory = await _query.GetById(id);
 
             if (interestCategory != null)

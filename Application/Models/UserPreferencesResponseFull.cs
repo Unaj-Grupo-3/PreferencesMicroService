@@ -8,6 +8,7 @@ namespace Application.Models
         public int UntilAge { get; set; } //OVERALL
         public int Distance { get; set; } //OVERALL
         public IEnumerable<GenderPreferenceResponse>? GendersPreferencesId { get; set; } //GENDERS
-        public IEnumerable<PreferenceResponseFull>? InterestPreferencesId { get; set; } //PREFERENCES -> Where Like=1
+        //public IEnumerable<PreferenceResponseFull_1>? InterestPreferencesId { get; set; } //PREFERENCES -> Where Like=1
+        public IEnumerable<InterestCategoryResponse_2>? CategoryPreferencesId { get; set; }
     }
 }

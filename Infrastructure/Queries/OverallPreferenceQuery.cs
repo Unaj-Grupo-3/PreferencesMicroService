@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Queries
 {
-    public class OverallPreferenceQuery: IOverallPreferenceQuery
+    public class OverallPreferenceQuery : IOverallPreferenceQuery
     {
         private readonly AppDbContext _context;
 

@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 namespace Application.UseCases
 {
-    public class TokenServices: ITokenServices
+    public class TokenServices : ITokenServices
     {
         public bool ValidateUserId(ClaimsIdentity identity, int userId)
         {

@@ -49,7 +49,7 @@ namespace Application.UseCases
         {
             var gender = await _userService.GetGenderById(userurl, request.GenderId);
 
-            if (gender != null)       
+            if (gender != null)
             {
                 GenderPreference genderPreference = new GenderPreference
                 {
