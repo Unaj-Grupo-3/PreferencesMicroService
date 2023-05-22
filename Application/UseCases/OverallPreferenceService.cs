@@ -111,6 +111,12 @@ namespace Application.UseCases
             {
                 throw new ArgumentException("La edad :Hasta debe ser mayor a edad :Desde");
             }
+            if (request.Distance <= 0)
+            {
+                throw new ArgumentException("La distancia debe ser mayor a 0 km");
+            }
+
+
             OverallPreference preference = await _query.GetByUserId(userId);
 
             if (preference != null)

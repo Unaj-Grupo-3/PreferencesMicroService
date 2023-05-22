@@ -35,6 +35,12 @@ namespace PreferencesMicroService.Controllers
             try
             {
                 var response = await _service.GetByIdCategory(InterestCategoryId);
+
+                if (response == null)
+                {
+                    return new JsonResult(new { Message = $"La categoría ingresada no existe" }) { StatusCode = 404 };
+                }
+
                 return Ok(response);
             }
             catch (Exception ex)

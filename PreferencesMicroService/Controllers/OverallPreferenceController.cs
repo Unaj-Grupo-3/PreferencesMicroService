@@ -67,14 +67,12 @@ namespace PreferencesMicroService.Controllers
                 return new JsonResult(new { Message = "Se ha creado la preferencia exitosamente.", Response = response }) { StatusCode = 201 };
 
             }
+            catch (ArgumentException ex)
+            {
+                return new JsonResult(new { Message = ex.Message }) { StatusCode = 400 };
+            }
             catch (Exception ex)
             {
-                if (ex.Message== "La edad debe ser mayor a 18 años"||ex.Message== "La edad :Hasta debe ser mayor a edad :Desde")
-                {
-                    return new JsonResult(new { Message = ex.Message }) { StatusCode = 400 };
-                }
-                else
-
                     return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
             }
         }
@@ -99,12 +97,12 @@ namespace PreferencesMicroService.Controllers
                     return new JsonResult(new { Message = "La preferencia ingresada no existe" }) { StatusCode = 400 };
                 }
             }
+            catch(ArgumentException ex)
+            {
+                return new JsonResult(new { Message = ex.Message }) { StatusCode = 400 };
+            }
             catch (Exception ex)
             {
-                if (ex.Message == "La edad debe ser mayor a 18 años" || ex.Message == "La edad :Hasta debe ser mayor a edad :Desde")
-                {
-                    return new JsonResult(new { Message = ex.Message }) { StatusCode = 400 };
-                }
                 return new JsonResult(new { Message = "Se ha producido un error interno en el servidor." }) { StatusCode = 500 };
             }
         }

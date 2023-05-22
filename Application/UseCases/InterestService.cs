@@ -69,6 +69,11 @@ namespace Application.UseCases
         {
             var interestCategory = await _categoryQuery.GetById(id);
 
+            if (interestCategory == null)
+            {
+                return null;
+            }
+
             var interests = await _query.GetAllByCategory(interestCategory.InterestCategoryId);
 
             var interestResponses = interests.Select(interest => new InterestResponse_1
