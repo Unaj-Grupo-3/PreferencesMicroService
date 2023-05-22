@@ -1,11 +1,10 @@
 using Application.Interfaces;
-using Azure.Core;
 using Domain.Entities;
 using Infrastructure.Persistence;
 
 namespace Infrastructure.Commands
 {
-    public class InterestCommand: IInterestCommand
+    public class InterestCommand : IInterestCommand
     {
         private readonly AppDbContext _context;
 

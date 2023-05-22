@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Queries
 {
-    public class InterestQuery: IInterestQuery
+    public class InterestQuery : IInterestQuery
     {
         private readonly AppDbContext _context;
 
@@ -27,7 +27,7 @@ namespace Infrastructure.Queries
 
         public async Task<Interest> GetById(int id)
         {
-            var interes = await _context.InterestDb.Include(i => i.InterestCategory).Where(i => i.InterestId == id).FirstOrDefaultAsync();    
+            var interes = await _context.InterestDb.Include(i => i.InterestCategory).Where(i => i.InterestId == id).FirstOrDefaultAsync();
             return interes;
         }
     }

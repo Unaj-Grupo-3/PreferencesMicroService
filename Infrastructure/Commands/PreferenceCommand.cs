@@ -1,7 +1,6 @@
 using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Commands
 {
@@ -15,9 +14,9 @@ namespace Infrastructure.Commands
         }
 
         public async Task Insert(Preference request)
-        {          
+        {
             _context.Add(request);
-            await _context.SaveChangesAsync();         
+            await _context.SaveChangesAsync();
         }
 
         public async Task Update(Preference request)

@@ -43,7 +43,7 @@ namespace PreferencesMicroService.Controllers
                 }
 
                 return Ok(response);
-                
+
             }
             catch (Exception ex)
             {
@@ -66,7 +66,7 @@ namespace PreferencesMicroService.Controllers
 
                 if (response == null)
                 {
-                    return new JsonResult(new { Message = _userService.GetMessage()}) { StatusCode = _userService.GetStatusCode() };
+                    return new JsonResult(new { Message = _userService.GetMessage() }) { StatusCode = _userService.GetStatusCode() };
                 }
                 return new JsonResult(new { Message = "Se ha actualizado la preferencia exitosamente.", Response = response }) { StatusCode = 201 };
             }
@@ -83,8 +83,8 @@ namespace PreferencesMicroService.Controllers
             try
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
-                int userId  = _tokenServices.GetUserId(identity);
-  
+                int userId = _tokenServices.GetUserId(identity);
+
                 var urluser = _configuration.GetSection("urluser").Get<string>();
 
                 var response = await _service.Delete(urluser, request, userId);

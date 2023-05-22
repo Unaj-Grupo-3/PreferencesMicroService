@@ -9,7 +9,8 @@ namespace Application.UseCases
         private readonly IOverallPreferenceService _overallPreferenceService;
         private readonly IGenderPreferenceService _genderPreferenceService;
 
-        public UserPreferencesService(IPreferenceService preferenceService, IOverallPreferenceService overallPreferenceService, IGenderPreferenceService genderPreferenceService)
+        public UserPreferencesService(IPreferenceService preferenceService, IOverallPreferenceService overallPreferenceService,
+            IGenderPreferenceService genderPreferenceService)
         {
             _preferenceService = preferenceService;
             _overallPreferenceService = overallPreferenceService;
@@ -70,7 +71,7 @@ namespace Application.UseCases
                     };
 
                     usersPreferences.Add(response);
-                }               
+                }
             }
 
             return usersPreferences;
@@ -79,7 +80,7 @@ namespace Application.UseCases
         public async Task<UserPreferencesResponse> GetByUserId(string urluser, int UserId)
         {
             List<int> interests = new List<int>();
-            List<int> genders = new List<int>();  
+            List<int> genders = new List<int>();
 
             var preferenceResponse = await _preferenceService.GetAllByUserId(UserId);
             var overallPreferenceResponse = await _overallPreferenceService.GetByUserId(UserId);
@@ -88,11 +89,11 @@ namespace Application.UseCases
             if (overallPreferenceResponse != null)
             {
 
-                if(preferenceResponse.Any())
+                if (preferenceResponse.Any())
                 {
                     foreach (var item in preferenceResponse)
                     {
-                        if(item.Like)
+                        if (item.Like)
                         {
                             interests.Add(item.Interest.Id);
                         }
@@ -135,12 +136,12 @@ namespace Application.UseCases
                 //List<InterestResponse> interests = new List<InterestResponse>();
                 //List<GenderResponse> genders = new List<GenderResponse>();
 
-                var preferenceResponse = await _preferenceService.GetAllByUserIdFull(overallPreference.UserId);
                 var genderPreferenceResponse = await _genderPreferenceService.GetAllByUserId(urluser, overallPreference.UserId);
+
+                var preferenceResponse = await _preferenceService.GetAllByUserIdFull(overallPreference.UserId);
 
                 if (overallPreference != null)
                 {
-
                     //if (preferenceResponse.Any())
                     //{
                     //    foreach (var item in preferenceResponse)
@@ -160,7 +161,6 @@ namespace Application.UseCases
                     //    }
                     //}
 
-
                     UserPreferencesResponseFull response = new UserPreferencesResponseFull
                     {
                         UserId = overallPreference.UserId,
@@ -168,13 +168,11 @@ namespace Application.UseCases
                         UntilAge = overallPreference.UntilAge,
                         Distance = overallPreference.Distance,
                         GendersPreferencesId = genderPreferenceResponse,
-                        InterestPreferencesId = preferenceResponse
+                        CategoryPreferencesId = preferenceResponse
                     };
-
                     usersPreferences.Add(response);
                 }
             }
-
             return usersPreferences;
         }
 
@@ -218,8 +216,6 @@ namespace Application.UseCases
                             genders.Add(item.GenderId);
                         }
                     }
-
-
                     UserPreferencesResponse response = new UserPreferencesResponse
                     {
                         UserId = overallPreference.UserId,

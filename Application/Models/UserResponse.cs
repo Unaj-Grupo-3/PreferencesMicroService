@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-
-namespace Application.Models
+﻿namespace Application.Models
 {
     public class UserResponse
     {

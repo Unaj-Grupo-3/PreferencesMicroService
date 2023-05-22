@@ -4,7 +4,7 @@ using Infrastructure.Persistence;
 
 namespace Infrastructure.Commands
 {
-    public class OverallPreferenceCommand: IOverallPreferenceCommand
+    public class OverallPreferenceCommand : IOverallPreferenceCommand
     {
         private readonly AppDbContext _context;
 

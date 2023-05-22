@@ -30,7 +30,7 @@ namespace Application.UseCases
                 //var content = JsonContent.Create(userId);
                 _httpClient.DefaultRequestHeaders.Authorization
                          = new AuthenticationHeaderValue("Bearer", token);
-                var responseApi = await _httpClient.GetAsync(urluser + _urlUser + "me" );
+                var responseApi = await _httpClient.GetAsync(urluser + _urlUser + "me");
                 var responseStatusCode = responseApi.IsSuccessStatusCode;
 
                 if (responseApi.IsSuccessStatusCode)
@@ -55,7 +55,7 @@ namespace Application.UseCases
                 _message = "Error en el microservicio de usuarios";
                 _statusCode = 500;
                 return false;
-            }            
+            }
         }
 
         public async Task<int> ValidateUserToken(string token)

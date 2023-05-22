@@ -1,9 +1,9 @@
+﻿
 namespace Application.Models
 {
-    public class InterestResponse
+    public class InterestResponse_1
     {
         public int Id { get; set; }
         public string? Description { get; set; }
-        public InterestCategoryResponse InterestCategory { get; set; }
     }
 }

@@ -1,12 +1,8 @@
 ﻿using Application.Interfaces;
 using Application.Models;
-using Azure.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Net.Http.Headers;
 using System.Security.Claims;
 
 namespace PreferencesMicroService.Controllers
@@ -71,9 +67,13 @@ namespace PreferencesMicroService.Controllers
                 return new JsonResult(new { Message = "Se ha creado la preferencia exitosamente.", Response = response }) { StatusCode = 201 };
 
             }
+            catch (ArgumentException ex)
+            {
+                return new JsonResult(new { Message = ex.Message }) { StatusCode = 400 };
+            }
             catch (Exception ex)
             {
-                return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
+                    return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
             }
         }
 
@@ -96,6 +96,10 @@ namespace PreferencesMicroService.Controllers
                 {
                     return new JsonResult(new { Message = "La preferencia ingresada no existe" }) { StatusCode = 400 };
                 }
+            }
+            catch(ArgumentException ex)
+            {
+                return new JsonResult(new { Message = ex.Message }) { StatusCode = 400 };
             }
             catch (Exception ex)
             {

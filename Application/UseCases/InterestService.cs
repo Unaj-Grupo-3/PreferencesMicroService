@@ -4,7 +4,7 @@ using Domain.Entities;
 
 namespace Application.UseCases
 {
-    public class InterestService: IInterestService
+    public class InterestService : IInterestService
     {
         private readonly IInterestQuery _query;
         private readonly IInterestCategoryQuery _categoryQuery;
@@ -16,46 +16,81 @@ namespace Application.UseCases
             _command = command;
             _categoryQuery = categoryQuery;
         }
+        //public async Task<IEnumerable<InterestResponse>> GetAll()
+        //{
+        //    List<InterestResponse> interestResponses = new List<InterestResponse>();
+        //    var lista = await _query.GetAll();
 
-        public async Task<IEnumerable<InterestResponse>> GetAll()
+        //    foreach (var item in lista)
+        //    {
+        //        InterestResponse interes = new InterestResponse
+        //        {
+        //            Id = item.InterestId,
+        //            Description = item.Description,
+        //            InterestCategory = new InterestCategoryResponse 
+        //            { 
+        //                Id = item.InterestCategory.InterestCategoryId, 
+        //                Description = item.InterestCategory.Description 
+        //            }
+        //        };
+        //        interestResponses.Add(interes);
+        //    }
+
+        //    return interestResponses;
+        //}
+        public async Task<IEnumerable<InterestCategoryResponse_1>> GetAll()
         {
-            List<InterestResponse> interestResponses = new List<InterestResponse>();
-            var lista = await _query.GetAll();
+            var interestCategories = await _categoryQuery.GetAll();
 
-            foreach (var item in lista)
+            List<InterestCategoryResponse_1> interestCategoryResponses = new List<InterestCategoryResponse_1>();
+
+            foreach (var category in interestCategories)
             {
-                InterestResponse interes = new InterestResponse
-                {
-                    Id = item.InterestId,
-                    Description = item.Description,
-                    InterestCategory = new InterestCategoryResponse { Id = item.InterestCategory.InterestCategoryId , Description = item.InterestCategory.Description }
-                };
-                interestResponses.Add(interes);
-            }
+                var interests = await _query.GetAllByCategory(category.InterestCategoryId);
 
-            return interestResponses;
-        }
-
-        public async Task<InterestResponse> GetById(int userId)
-        {
-            Interest interest = await _query.GetById(userId);
-
-            if (interest != null)
-            {
-                InterestResponse response = new InterestResponse
+                var interestResponses = interests.Select(interest => new InterestResponse_1
                 {
                     Id = interest.InterestId,
-                    Description = interest.Description,
-                    InterestCategory = new InterestCategoryResponse { Id = interest.InterestCategoryId, Description = interest.InterestCategory.Description }
+                    Description = interest.Description
+                }).ToList();
+
+                InterestCategoryResponse_1 interes = new InterestCategoryResponse_1
+                {
+                    Id = category.InterestCategoryId,
+                    Description = category.Description,
+                    Interes = interestResponses
                 };
 
-                return response;
+                interestCategoryResponses.Add(interes);
+            }
+            return interestCategoryResponses;
+        }
+        public async Task<InterestCategoryResponse_1> GetByIdCategory(int id)
+        {
+            var interestCategory = await _categoryQuery.GetById(id);
+
+            if (interestCategory == null)
+            {
+                return null;
             }
 
-            return null;
+            var interests = await _query.GetAllByCategory(interestCategory.InterestCategoryId);
 
+            var interestResponses = interests.Select(interest => new InterestResponse_1
+            {
+                Id = interest.InterestId,
+                Description = interest.Description
+            }).ToList();
+
+            InterestCategoryResponse_1 interesCategoria = new InterestCategoryResponse_1
+            {
+                Id = interestCategory.InterestCategoryId,
+                Description = interestCategory.Description,
+                Interes = interestResponses
+            };
+            return interesCategoria;
         }
-
+        //no tiene uso
         public async Task<IEnumerable<InterestResponse>> GetAllByCategory(int interestCategoryId)
         {
             List<InterestResponse> interestResponses = new List<InterestResponse>();
@@ -105,8 +140,8 @@ namespace Application.UseCases
 
                 return response;
             }
-            
-            return null;           
+
+            return null;
         }
 
         public async Task<InterestResponse> Update(InterestReq request, int id)
@@ -120,7 +155,7 @@ namespace Application.UseCases
                 if (interest != null)
                 {
                     interest.Description = request.Description;
-                    interest.InterestCategoryId = request.InterestCategoryId;                   
+                    interest.InterestCategoryId = request.InterestCategoryId;
 
                     await _command.Update(interest);
 
@@ -131,7 +166,7 @@ namespace Application.UseCases
                         InterestCategory = new InterestCategoryResponse { Id = category.InterestCategoryId, Description = category.Description }
                     };
 
-                    return response; 
+                    return response;
                 }
 
                 return null;
@@ -146,8 +181,8 @@ namespace Application.UseCases
             {
                 var interestResponse = await _query.GetById(id);
 
-                if(interestResponse != null)
-                {    
+                if (interestResponse != null)
+                {
                     await _command.Delete(interestResponse);
 
                     var category = await _categoryQuery.GetById(interestResponse.InterestCategoryId);
@@ -166,10 +201,27 @@ namespace Application.UseCases
                 return null;
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return null;
             }
+        }
+
+        public async Task<InterestResponse> GetById(int id)
+        {
+            Interest interest = await _query.GetById(id);
+
+            if (interest != null)
+            {
+                InterestResponse response = new InterestResponse
+                {
+                    Id = interest.InterestId,
+                    Description = interest.Description,
+                    InterestCategory = new InterestCategoryResponse { Id = interest.InterestCategoryId, Description = interest.InterestCategory.Description }
+                };
+                return response;
+            }
+            return null;
         }
     }
 }
