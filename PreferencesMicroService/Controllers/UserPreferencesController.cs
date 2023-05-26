@@ -1,5 +1,9 @@
 ﻿using Application.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PreferencesMicroService.Authorization;
+using System.Security.Claims;
 
 namespace PreferencesMicroService.Controllers
 {
@@ -32,10 +36,21 @@ namespace PreferencesMicroService.Controllers
         }
 
         [HttpGet("Ids")]
+        [Authorize(AuthenticationSchemes = ApiKeySchemeOptions.Scheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetUserByListId([FromQuery] List<int> userIds, bool fullResponse)
         {
             try
             {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var apikey = _configuration.GetSection("ApiKey").Get<string>();
+                var key = HttpContext.User.Identity.Name;
+
+                if (key != null && key != apikey)
+                {
+                    return new JsonResult(new { Message = "No se puede acceder. La Key es inválida" }) { StatusCode = 401 };
+                }
+
                 if (fullResponse)
                 {
                     var urluser = _configuration.GetSection("urluser").Get<string>();

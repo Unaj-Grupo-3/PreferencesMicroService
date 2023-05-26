@@ -11,16 +11,12 @@ namespace PreferencesMicroService.Controllers
     [ApiController]
     public class PreferenceController : ControllerBase
     {
-        private readonly IUserApiService _userService;
         private readonly IPreferenceService _service;
-        private readonly IConfiguration _configuration;
         private readonly ITokenServices _tokenServices;
 
         public PreferenceController(IUserApiService userService, IPreferenceService service, IConfiguration configuration, ITokenServices tokenServices)
         {
-            _userService = userService;
             _service = service;
-            _configuration = configuration;
             _tokenServices = tokenServices;
         }
 
@@ -117,22 +113,5 @@ namespace PreferencesMicroService.Controllers
                 return new JsonResult(new { Message = "Se ha producido un error interno en el servidor." }) { StatusCode = 500 };
             }
         }
-
-        // Quizas no es necesario
-        //[HttpGet("All")]
-        //public async Task<IActionResult> GetAll()
-        //{
-        //    try
-        //    {
-        //        //await _userService.GetAllGenders();
-        //        var response = await _service.GetAll();
-        //        return Ok(response);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
-        //    }
-        //}
-
     }
 }
