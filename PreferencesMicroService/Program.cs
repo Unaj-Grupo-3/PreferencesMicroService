@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using PreferencesMicroService.Authorization;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -95,6 +96,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
+
+builder.Services.AddAuthentication(ApiKeySchemeOptions.Scheme)
+    .AddScheme<ApiKeySchemeOptions, ApiKeySchemeHandler>(
+        ApiKeySchemeOptions.Scheme, options =>
+        {
+            options.HeaderName = "X-API-KEY";
+        });
 
 var app = builder.Build();
 

@@ -1,5 +1,4 @@
-﻿
-namespace Application.Models
+﻿namespace Application.Models
 {
     public class InterestResponse_1
     {
