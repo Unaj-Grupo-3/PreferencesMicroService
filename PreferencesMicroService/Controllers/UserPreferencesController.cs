@@ -21,10 +21,18 @@ namespace PreferencesMicroService.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = ApiKeySchemeOptions.Scheme)]
         public async Task<IActionResult> GetAll()
         {
             try
             {
+                var apikey = _configuration.GetSection("ApiKey").Get<string>();
+                var key = HttpContext.User.Identity.Name;
+
+                if (key != null && key != apikey)
+                {
+                    return new JsonResult(new { Message = "No se puede acceder. La Key es inválida" }) { StatusCode = 401 };
+                }
                 var urluser = _configuration.GetSection("urluser").Get<string>();
                 var response = await _userPreferencesService.GetAll(urluser);
                 return Ok(response);
