@@ -131,16 +131,16 @@ namespace Application.UseCases
 
                     await _command.Insert(preference);
                 }
-                else
-                {
-                    return null;
-                }
                 //else
                 //{
-                //    responsePreference.OwnInterest = request.OwnInterest;
-                //    responsePreference.Like = request.Like;
-                //    await _command.Update(responsePreference);
+                //    return null;
                 //}
+                else
+                {
+                    responsePreference.OwnInterest = request.OwnInterest;
+                    responsePreference.Like = request.Like;
+                    await _command.Update(responsePreference);
+                }
 
                 PreferenceResponse response = new PreferenceResponse
                 {
