@@ -10,7 +10,26 @@ namespace UnitTest
     public class UnitTestInterestCategory
     {
         [Fact]
-        public async void GetAll()
+        public async void GetAll_Ok()
+        {
+            //Arrange
+            var mockCommand = new Mock<IInterestCategoryCommand>();
+            var mockQuery = new Mock<IInterestCategoryQuery>();
+            InterestCategoryService service = new(mockQuery.Object, mockCommand.Object);
+            List<InterestCategory> interestCategories = new List<InterestCategory>();
+            InterestCategory category = new InterestCategory { InterestCategoryId = 1, Description = "InteresCategory", Interests = null };
+            interestCategories.Add(category);
+            mockQuery.Setup(q => q.GetAll()).ReturnsAsync(interestCategories);
+
+            //Act
+            var lista = await service.GetAll();
+
+            //Assert
+            Assert.True(lista.Any());
+        }
+
+        [Fact]
+        public async void GetAll_Null()
         {
             //Arrange
             var mockCommand = new Mock<IInterestCategoryCommand>();
@@ -149,6 +168,28 @@ namespace UnitTest
             //Assert
             response.Id.Should().Be(interestCategoryId);
             response.Description.Should().Be(interesCategoryDescription);
+        }
+
+        [Fact]
+        public async void Delete_ThrowsException()
+        {
+            //Arrange
+            var mockCommand = new Mock<IInterestCategoryCommand>();
+            var mockQuery = new Mock<IInterestCategoryQuery>();
+            var request = new InterestCategoryReq { Description = "CategoryTest" };
+            int interestCategoryId = 1;
+            InterestCategoryService service = new(mockQuery.Object, mockCommand.Object);
+            mockQuery.Setup(q => q.GetById(It.IsAny<int>())).
+                                    ReturnsAsync(new InterestCategory
+                                    { InterestCategoryId = interestCategoryId, Description = request.Description, Interests = null });
+            mockCommand.Setup(q => q.Delete(It.IsAny<InterestCategory>())).ThrowsAsync(new Exception("Error al eliminar"));
+
+            //Act
+            var response = await service.Delete(interestCategoryId);
+
+            //Assert
+            //await Assert.ThrowsAsync<Exception>(() => service.Delete(1));
+            Assert.Null(response);
         }
     }
 }

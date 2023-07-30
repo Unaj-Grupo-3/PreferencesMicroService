@@ -161,6 +161,26 @@ namespace UnitTest
         }
 
         [Fact]
+        public async void Insert_GenderNull()
+        {
+            //Arrange
+            var mockCommand = new Mock<IGenderPreferenceCommand>();
+            var mockQuery = new Mock<IGenderPreferenceQuery>();
+            var mockUserApiService = new Mock<IUserApiService>();
+            GenderPreferenceService service = new(mockQuery.Object, mockCommand.Object, mockUserApiService.Object);
+            int userId = 1;
+            int genderId = 1;
+            string userurl = "https://localhost:7020";
+            GenderPreferenceReq request = new GenderPreferenceReq { GenderId = genderId };     
+
+            //Act
+            var response = await service.Insert(userurl, request, userId);
+
+            //Assert
+            Assert.Null(response);
+        }
+
+        [Fact]
         public async void Insert_ThrowsException()
         {
             //Arrange
@@ -227,6 +247,27 @@ namespace UnitTest
             GenderResponse genderResponse = new GenderResponse { GenderId = genderId, Description = "Masculino" };
             mockUserApiService.Setup(s => s.GetGenderById(It.IsAny<string>(), It.IsAny<int>())).
                                     ReturnsAsync(genderResponse);
+
+            //Act
+            var response = await service.Delete(userurl, request, userId);
+
+            //Assert
+            Assert.Null(response);
+        }
+
+
+        [Fact]
+        public async void Delete_GenderNull()
+        {
+            //Arrange
+            var mockCommand = new Mock<IGenderPreferenceCommand>();
+            var mockQuery = new Mock<IGenderPreferenceQuery>();
+            var mockUserApiService = new Mock<IUserApiService>();
+            GenderPreferenceService service = new(mockQuery.Object, mockCommand.Object, mockUserApiService.Object);
+            int userId = 1;
+            int genderId = 1;
+            string userurl = "https://localhost:7020";
+            GenderPreferenceReq request = new GenderPreferenceReq { GenderId = genderId };
 
             //Act
             var response = await service.Delete(userurl, request, userId);
