@@ -95,5 +95,62 @@ namespace UnitTest
             response.Id.Should().Be(interestCategoryId);
             response.Description.Should().Be(request.Description);
         }
+
+        [Fact]
+        public async void Update_ThrowsException()
+        {
+            //Arrange
+            var mockCommand = new Mock<IInterestCategoryCommand>();
+            var mockQuery = new Mock<IInterestCategoryQuery>();
+            var request = new InterestCategoryReq { Description = "CategoryTest" };
+            int interestCategoryId = 1;
+            InterestCategoryService service = new(mockQuery.Object, mockCommand.Object);
+            mockQuery.Setup(q => q.GetById(It.IsAny<int>())).
+                                    ReturnsAsync(new InterestCategory
+                                    { InterestCategoryId = interestCategoryId, Description = request.Description, Interests = null });
+            mockCommand.Setup(q => q.Update(It.IsAny<InterestCategory>())).ThrowsAsync(new Exception("Error al actualizar"));            
+
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<Exception>(() => service.Update(request, 1));
+        }
+
+        [Fact]
+        public async void Delete_Null()
+        {
+            //Arrange
+            var mockCommand = new Mock<IInterestCategoryCommand>();
+            var mockQuery = new Mock<IInterestCategoryQuery>();
+            int interestCategoryId = 1;
+            InterestCategoryService service = new(mockQuery.Object, mockCommand.Object);
+
+            //Act
+            var response = await service.Delete(interestCategoryId);
+
+            //Assert
+            Assert.Null(response);
+        }
+
+        [Fact]
+        public async void Delete_Ok()
+        {
+            //Arrange
+            var mockCommand = new Mock<IInterestCategoryCommand>();
+            var mockQuery = new Mock<IInterestCategoryQuery>();
+            int interestCategoryId = 1;
+            string interesCategoryDescription = "InterestCategory";
+            InterestCategoryService service = new(mockQuery.Object, mockCommand.Object);
+
+            mockQuery.Setup(q => q.GetById(It.IsAny<int>())).
+                                    ReturnsAsync(new InterestCategory
+                                    { InterestCategoryId = interestCategoryId, Description = interesCategoryDescription, Interests = null });
+
+            //Act
+            var response = await service.Delete(interestCategoryId);
+
+            //Assert
+            response.Id.Should().Be(interestCategoryId);
+            response.Description.Should().Be(interesCategoryDescription);
+        }
     }
 }
