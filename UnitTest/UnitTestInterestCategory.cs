@@ -1,7 +1,5 @@
-﻿using Xunit;
-using Moq;
+﻿using Moq;
 using FluentAssertions;
-
 using Application.UseCases;
 using Application.Interfaces;
 using Application.Models;
