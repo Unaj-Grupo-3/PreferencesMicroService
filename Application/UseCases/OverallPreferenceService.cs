@@ -121,7 +121,7 @@ namespace Application.UseCases
 
             if (preference != null)
             {
-                //preference.UserId = request.UserId;
+                
                 preference.SinceAge = request.SinceAge;
                 preference.UntilAge = request.UntilAge;
                 preference.Distance = request.Distance;
