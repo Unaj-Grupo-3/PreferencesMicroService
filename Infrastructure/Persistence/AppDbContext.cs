@@ -53,7 +53,7 @@ namespace Infrastructure.Persistence
                     .HasOne<Interest>(preference => preference.Interest)
                     .WithMany(interest => interest.Preferences)
                     .HasForeignKey(preference => preference.InterestId);
-                //FK p.UserId
+                
 
             });
 
@@ -64,7 +64,7 @@ namespace Infrastructure.Persistence
                 entity.HasKey(op => op.OverallPreferenceId);
                 entity.Property(op => op.OverallPreferenceId).ValueGeneratedOnAdd();
 
-                //FK p.UserId
+                
 
             });
 
@@ -74,7 +74,7 @@ namespace Infrastructure.Persistence
                 entity.ToTable("GenderPreference");
                 entity.HasKey(p => new { p.UserId, p.GenderId });
 
-                //FK p.UserId y p.GenderId
+                
             });
         }
     }

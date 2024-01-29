@@ -131,19 +131,5 @@ namespace PreferencesMicroService.Controllers
             }
         }
 
-        // No hace falta un getAll de overall
-        //[HttpGet("All")]
-        //public async Task<IActionResult> GetAll()
-        //{
-        //    try
-        //    {
-        //        var response = await _service.GetAll();
-        //        return Ok(response);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new JsonResult(new { Message = "Se ha producido un error interno en el servidor. " + ex.Message }) { StatusCode = 500 };
-        //    }
-        //}
     }
 }

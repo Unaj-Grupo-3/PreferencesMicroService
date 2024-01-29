@@ -27,7 +27,6 @@ namespace Application.UseCases
         {
             try
             {
-                //var content = JsonContent.Create(userId);
                 _httpClient.DefaultRequestHeaders.Authorization
                          = new AuthenticationHeaderValue("Bearer", token);
                 var responseApi = await _httpClient.GetAsync(urluser + _urlUser + "me");
