@@ -16,28 +16,7 @@ namespace Application.UseCases
             _command = command;
             _categoryQuery = categoryQuery;
         }
-        //public async Task<IEnumerable<InterestResponse>> GetAll()
-        //{
-        //    List<InterestResponse> interestResponses = new List<InterestResponse>();
-        //    var lista = await _query.GetAll();
 
-        //    foreach (var item in lista)
-        //    {
-        //        InterestResponse interes = new InterestResponse
-        //        {
-        //            Id = item.InterestId,
-        //            Description = item.Description,
-        //            InterestCategory = new InterestCategoryResponse 
-        //            { 
-        //                Id = item.InterestCategory.InterestCategoryId, 
-        //                Description = item.InterestCategory.Description 
-        //            }
-        //        };
-        //        interestResponses.Add(interes);
-        //    }
-
-        //    return interestResponses;
-        //}
         public async Task<IEnumerable<InterestCategoryResponse_1>> GetAll()
         {
             var interestCategories = await _categoryQuery.GetAll();
@@ -90,7 +69,7 @@ namespace Application.UseCases
             };
             return interesCategoria;
         }
-        //no tiene uso
+        
         public async Task<IEnumerable<InterestResponse>> GetAllByCategory(int interestCategoryId)
         {
             List<InterestResponse> interestResponses = new List<InterestResponse>();

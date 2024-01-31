@@ -133,33 +133,12 @@ namespace Application.UseCases
 
             foreach (var overallPreference in overallPreferenceResponses)
             {
-                //List<InterestResponse> interests = new List<InterestResponse>();
-                //List<GenderResponse> genders = new List<GenderResponse>();
-
                 var genderPreferenceResponse = await _genderPreferenceService.GetAllByUserId(urluser, overallPreference.UserId);
 
                 var preferenceResponse = await _preferenceService.GetAllByUserIdFull(overallPreference.UserId);
 
                 if (overallPreference != null)
                 {
-                    //if (preferenceResponse.Any())
-                    //{
-                    //    foreach (var item in preferenceResponse)
-                    //    {
-                    //        if (item.Like)
-                    //        {
-                    //            interests.Add(item.Interest);
-                    //        }
-                    //    }
-                    //}
-
-                    //if (genderPreferenceResponse.Any())
-                    //{
-                    //    foreach (var item in genderPreferenceResponse)
-                    //    {
-                    //        genders.Add(item);
-                    //    }
-                    //}
 
                     UserPreferencesResponseFull response = new UserPreferencesResponseFull
                     {
